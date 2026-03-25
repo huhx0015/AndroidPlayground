@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-  namespace = "com.huhx0015.androidplayground"
+  namespace = "com.huhx0015.androidplayground.core.data"
   compileSdk {
     version = release(36)
   }
