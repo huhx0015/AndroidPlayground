@@ -20,7 +20,7 @@ import com.huhx0015.androidplayground.ui.theme.AndroidPlaygroundTheme
 @PreviewScreenSizes
 @Composable
 fun EntranceScreen() {
-  var currentDestination by rememberSaveable { mutableStateOf(EntranceDestinations.HOME) }
+  var currentDestination by rememberSaveable { mutableStateOf(EntranceDestinations.ANDROID) }
 
   NavigationSuiteScaffold(
     navigationSuiteItems = {
