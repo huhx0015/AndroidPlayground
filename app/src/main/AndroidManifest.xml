@@ -28,6 +28,11 @@
       android:name=".feature.coroutine.CoroutineActivity"
       android:exported="false"
       android:theme="@style/Theme.AndroidPlayground" />
+
+    <activity
+      android:name=".feature.kotlin.KotlinTopicActivity"
+      android:exported="false"
+      android:theme="@style/Theme.AndroidPlayground" />
   </application>
 
 </manifest>
