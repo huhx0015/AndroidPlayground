@@ -1,6 +1,7 @@
 package com.huhx0015.androidplayground.feature.entrance
 
 import com.huhx0015.androidplayground.core.architecture.BaseViewModel
+import com.huhx0015.androidplayground.feature.android.recyclerview.RecyclerViewActivity
 import com.huhx0015.androidplayground.feature.kotlin.coroutine.CoroutineActivity
 import com.huhx0015.androidplayground.feature.kotlin.KotlinTopicActivity
 import kotlinx.coroutines.channels.Channel
@@ -26,8 +27,9 @@ class EntranceViewModel : BaseViewModel<EntranceState, EntranceIntent, EntranceE
       }
       is EntranceIntent.OpenTopic -> {
         val target = when (intent.topic) {
-          TopicRef.Coroutines -> CoroutineActivity::class
-          TopicRef.KotlinSample -> KotlinTopicActivity::class
+          EntranceTopic.Coroutines -> CoroutineActivity::class
+          EntranceTopic.KotlinSample -> KotlinTopicActivity::class
+          EntranceTopic.RecyclerView -> RecyclerViewActivity::class
         }
         eventChannel.send(EntranceEvent.StartActivity(target))
       }

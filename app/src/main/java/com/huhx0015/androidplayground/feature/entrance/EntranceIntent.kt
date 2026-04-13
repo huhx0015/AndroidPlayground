@@ -4,5 +4,5 @@ import com.huhx0015.androidplayground.core.architecture.BaseIntent
 
 sealed interface EntranceIntent : BaseIntent {
   data class SelectTab(val tab: EntranceDestinations) : EntranceIntent
-  data class OpenTopic(val topic: TopicRef) : EntranceIntent
+  data class OpenTopic(val topic: EntranceTopic) : EntranceIntent
 }

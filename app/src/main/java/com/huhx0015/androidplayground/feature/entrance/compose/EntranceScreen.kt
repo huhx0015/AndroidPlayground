@@ -28,7 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.huhx0015.androidplayground.feature.entrance.EntranceDestinations
 import com.huhx0015.androidplayground.feature.entrance.EntranceIntent
 import com.huhx0015.androidplayground.feature.entrance.EntranceViewModel
-import com.huhx0015.androidplayground.feature.entrance.TopicRef
+import com.huhx0015.androidplayground.feature.entrance.EntranceTopic
 import com.huhx0015.androidplayground.feature.entrance.navigation.EntranceNavKey
 import com.huhx0015.androidplayground.feature.entrance.navigation.toNavKey
 import androidx.navigation3.runtime.NavEntry
@@ -105,8 +105,8 @@ fun EntranceScreen(viewModel: EntranceViewModel) {
 
 @Composable
 private fun TopicListScreen(
-  topics: List<TopicRef>,
-  onTopicClick: (TopicRef) -> Unit,
+  topics: List<EntranceTopic>,
+  onTopicClick: (EntranceTopic) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   LazyColumn(
