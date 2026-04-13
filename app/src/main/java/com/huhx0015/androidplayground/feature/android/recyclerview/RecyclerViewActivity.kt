@@ -10,7 +10,8 @@ import com.huhx0015.androidplayground.databinding.ActivityRecyclerViewBinding
 
 class RecyclerViewActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityRecyclerViewBinding
+    private lateinit var binding: ActivityRecyclerViewBinding
+    private lateinit var recyclerViewAdapter: RecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +19,11 @@ class RecyclerViewActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        initScreen()
+        initRecyclerView()
+    }
+
+    private fun initScreen() {
         enableEdgeToEdge()
         binding = ActivityRecyclerViewBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -26,5 +32,10 @@ class RecyclerViewActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    private fun initRecyclerView() {
+        recyclerViewAdapter = RecyclerViewAdapter()
+        binding.recyclerView.adapter = recyclerViewAdapter
     }
 }

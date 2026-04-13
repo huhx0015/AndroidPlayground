@@ -1,5 +1,7 @@
 package com.huhx0015.androidplayground.feature.entrance
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.huhx0015.androidplayground.core.architecture.BaseViewModel
 import com.huhx0015.androidplayground.feature.android.recyclerview.RecyclerViewActivity
 import com.huhx0015.androidplayground.feature.kotlin.coroutine.CoroutineActivity
@@ -12,27 +14,34 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 
-class EntranceViewModel : BaseViewModel<EntranceState, EntranceIntent, EntranceEvent>() {
+class EntranceViewModel : ViewModel() {
 
-  private val _state = MutableStateFlow(EntranceState())
-  override val state: StateFlow<EntranceState> = _state.asStateFlow()
+  private val impl =
+    object : BaseViewModel<EntranceState, EntranceIntent, EntranceEvent>(viewModelScope) {
+      private val _state = MutableStateFlow(EntranceState())
+      override val state: StateFlow<EntranceState> = _state.asStateFlow()
 
-  private val eventChannel = Channel<EntranceEvent>(Channel.BUFFERED)
-  override val events: Flow<EntranceEvent> = eventChannel.receiveAsFlow()
+      private val eventChannel = Channel<EntranceEvent>(Channel.BUFFERED)
+      override val events: Flow<EntranceEvent> = eventChannel.receiveAsFlow()
 
-  override suspend fun processIntent(intent: EntranceIntent) {
-    when (intent) {
-      is EntranceIntent.SelectTab -> {
-        _state.update { it.copy(selectedTab = intent.tab) }
-      }
-      is EntranceIntent.OpenTopic -> {
-        val target = when (intent.topic) {
-          EntranceTopic.Coroutines -> CoroutineActivity::class
-          EntranceTopic.KotlinSample -> KotlinTopicActivity::class
-          EntranceTopic.RecyclerView -> RecyclerViewActivity::class
+      override suspend fun processIntent(intent: EntranceIntent) {
+        when (intent) {
+          is EntranceIntent.SelectTab -> {
+            _state.update { it.copy(selectedTab = intent.tab) }
+          }
+          is EntranceIntent.OpenTopic -> {
+            val target = when (intent.topic) {
+              EntranceTopic.Coroutines -> CoroutineActivity::class
+              EntranceTopic.KotlinSample -> KotlinTopicActivity::class
+              EntranceTopic.RecyclerView -> RecyclerViewActivity::class
+            }
+            eventChannel.send(EntranceEvent.StartActivity(target))
+          }
         }
-        eventChannel.send(EntranceEvent.StartActivity(target))
       }
     }
-  }
+
+  val state: StateFlow<EntranceState> get() = impl.state
+  val events: Flow<EntranceEvent> get() = impl.events
+  fun sendIntent(intent: EntranceIntent) = impl.sendIntent(intent)
 }
