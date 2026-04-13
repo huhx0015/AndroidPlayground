@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.coroutine.compose
+package com.huhx0015.androidplayground.feature.kotlin.coroutine.compose
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,10 +28,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import com.huhx0015.androidplayground.feature.coroutine.CoroutineDemoSection
-import com.huhx0015.androidplayground.feature.coroutine.CoroutineEvent
-import com.huhx0015.androidplayground.feature.coroutine.CoroutineIntent
-import com.huhx0015.androidplayground.feature.coroutine.CoroutineState
+import com.huhx0015.androidplayground.feature.kotlin.coroutine.CoroutineDemoSection
+import com.huhx0015.androidplayground.feature.kotlin.coroutine.CoroutineEvent
+import com.huhx0015.androidplayground.feature.kotlin.coroutine.CoroutineIntent
+import com.huhx0015.androidplayground.feature.kotlin.coroutine.CoroutineState
 import com.huhx0015.androidplayground.ui.theme.AndroidPlaygroundTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

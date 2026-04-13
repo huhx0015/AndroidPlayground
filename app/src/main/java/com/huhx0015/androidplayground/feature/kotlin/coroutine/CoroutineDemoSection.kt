@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.coroutine
+package com.huhx0015.androidplayground.feature.kotlin.coroutine
 
 enum class CoroutineDemoSection(
   val title: String,

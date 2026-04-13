@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.coroutine
+package com.huhx0015.androidplayground.feature.kotlin.coroutine
 
 import android.os.SystemClock
 import androidx.lifecycle.viewModelScope
@@ -30,7 +30,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
-import kotlin.coroutines.coroutineContext
 
 class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, CoroutineEvent>() {
 

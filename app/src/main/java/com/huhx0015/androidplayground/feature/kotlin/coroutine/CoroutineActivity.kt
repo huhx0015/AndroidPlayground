@@ -1,11 +1,11 @@
-package com.huhx0015.androidplayground.feature.coroutine
+package com.huhx0015.androidplayground.feature.kotlin.coroutine
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.huhx0015.androidplayground.feature.coroutine.compose.CoroutineScreen
+import com.huhx0015.androidplayground.feature.kotlin.coroutine.compose.CoroutineScreen
 import com.huhx0015.androidplayground.ui.theme.AndroidPlaygroundTheme
 
 class CoroutineActivity : ComponentActivity() {

@@ -1,7 +1,7 @@
 package com.huhx0015.androidplayground.feature.entrance
 
 import com.huhx0015.androidplayground.core.architecture.BaseViewModel
-import com.huhx0015.androidplayground.feature.coroutine.CoroutineActivity
+import com.huhx0015.androidplayground.feature.kotlin.coroutine.CoroutineActivity
 import com.huhx0015.androidplayground.feature.kotlin.KotlinTopicActivity
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +26,7 @@ class EntranceViewModel : BaseViewModel<EntranceState, EntranceIntent, EntranceE
       }
       is EntranceIntent.OpenTopic -> {
         val target = when (intent.topic) {
-          TopicRef.AndroidCoroutines -> CoroutineActivity::class
+          TopicRef.Coroutines -> CoroutineActivity::class
           TopicRef.KotlinSample -> KotlinTopicActivity::class
         }
         eventChannel.send(EntranceEvent.StartActivity(target))

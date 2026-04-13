@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.coroutine
+package com.huhx0015.androidplayground.feature.kotlin.coroutine
 
 import com.huhx0015.androidplayground.core.architecture.BaseIntent
 
