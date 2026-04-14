@@ -5,9 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.model.DataItem
 import com.huhx0015.androidplayground.R
 
 class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewViewHolder>() {
+
+    val dataItemList: MutableList<DataItem> = mutableListOf()
 
     override fun onCreateViewHolder(
         viewGroup: ViewGroup,
@@ -30,6 +33,11 @@ class RecyclerViewAdapter : RecyclerView.Adapter<RecyclerViewAdapter.RecyclerVie
     override fun getItemCount(): Int {
         // TODO: Return number of items.
         return 3
+    }
+
+    internal fun updateList(list: List<DataItem>) {
+        dataItemList.clear()
+        dataItemList.addAll(list)
     }
 
     class RecyclerViewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
