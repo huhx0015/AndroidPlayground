@@ -44,6 +44,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
   private var cancellableDemoJob: Job? = null
   private var flowDemoJob: Job? = null
 
+  // processIntent(): Routes each UI intent to the corresponding coroutine demo handler.
   override suspend fun processIntent(intent: CoroutineIntent) {
         when (intent) {
           is CoroutineIntent.SelectSection -> {
@@ -69,6 +70,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // appendLog(): Adds a timestamped log entry and keeps only the most recent items.
   private fun appendLog(message: String) {
         val stamp = LocalTime.now().format(timeFmt)
         _state.update { s ->
@@ -77,6 +79,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // runSampleWork(): Runs a basic suspend task and updates loading/status UI state.
   private suspend fun runSampleWork() {
         _state.update { it.copy(isLoading = true, statusText = "Working…") }
         delay(1_500L)
@@ -84,6 +87,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         eventChannel.send(CoroutineEvent.ShowMessage("Sample coroutine finished"))
       }
 
+  // runDispatcherDemo(): Demonstrates switching from Main to Default and then back to Main.
   private suspend fun runDispatcherDemo() {
         appendLog("Before withContext: ${threadLabel()}")
         val checksum = withContext(Dispatchers.Default) {
@@ -99,6 +103,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         eventChannel.send(CoroutineEvent.ShowMessage("Dispatcher demo finished"))
       }
 
+  // runAsyncParallelDemo(): Shows parallel async execution with awaitAll and elapsed timing.
   private suspend fun runAsyncParallelDemo() {
         val t0 = SystemClock.elapsedRealtime()
         coroutineScope {
@@ -110,6 +115,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // runAsyncSequentialDemo(): Shows sequential suspend calls for timing comparison.
   private suspend fun runAsyncSequentialDemo() {
         val t0 = SystemClock.elapsedRealtime()
         delay(800)
@@ -118,6 +124,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         appendLog("Sequential delays in ${elapsed}ms (expect ~1600ms)")
       }
 
+  // startLongRunningWork(): Starts cancellable background work and tracks progress in state.
   private fun startLongRunningWork() {
         cancellableDemoJob?.cancel()
         cancellableDemoJob = viewModelScope.launch {
@@ -138,6 +145,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // cancelLongRunningWork(): Cancels active long work and runs non-cancellable cleanup.
   private fun cancelLongRunningWork() {
         cancellableDemoJob?.cancel()
         cancellableDemoJob = null
@@ -149,6 +157,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // runTryCatchExceptionDemo(): Demonstrates local exception handling within a suspending block.
   private suspend fun runTryCatchExceptionDemo() {
         try {
           delay(50)
@@ -159,6 +168,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         _state.update { it.copy(statusText = "Exceptions: try/catch around suspend call") }
       }
 
+  // runCoroutineExceptionHandlerDemo(): Demonstrates global coroutine exception handling.
   private fun runCoroutineExceptionHandlerDemo() {
         val handler = CoroutineExceptionHandler { _, throwable ->
           appendLog("CoroutineExceptionHandler: ${throwable::class.simpleName}: ${throwable.message}")
@@ -169,6 +179,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // runColdFlowTwoCollectorsDemo(): Demonstrates that cold flow upstream executes per collector.
   private fun runColdFlowTwoCollectorsDemo() {
         flowDemoJob?.cancel()
         flowDemoJob = viewModelScope.launch {
@@ -187,6 +198,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // runSharedFlowTwoCollectorsDemo(): Demonstrates sharing one upstream flow across subscribers.
   private fun runSharedFlowTwoCollectorsDemo() {
         flowDemoJob?.cancel()
         flowDemoJob = viewModelScope.launch {
@@ -211,6 +223,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // runChannelBackpressureDemo(): Demonstrates bounded channel behavior under producer pressure.
   private suspend fun runChannelBackpressureDemo() {
         appendLog("Bounded Channel(capacity=2): trySend may suspend or fail when full")
         val channel = Channel<Int>(capacity = 2)
@@ -235,6 +248,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // runCoroutineScopeFailureDemo(): Shows failure propagation and sibling cancellation in coroutineScope.
   private suspend fun runCoroutineScopeFailureDemo() {
         try {
           coroutineScope {
@@ -254,6 +268,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // runSupervisorScopeFailureDemo(): Shows sibling isolation behavior in supervisorScope.
   private suspend fun runSupervisorScopeFailureDemo() {
         supervisorScope {
           val good = async {
@@ -272,6 +287,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // runNonCancellableCleanupDemo(): Demonstrates finally-block cleanup using NonCancellable.
   private fun runNonCancellableCleanupDemo() {
         viewModelScope.launch {
           try {
@@ -296,6 +312,7 @@ class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, Corout
         }
       }
 
+  // threadLabel(): Returns current thread name for log visibility in dispatcher demos.
   private fun threadLabel(): String = Thread.currentThread().name
 
   private companion object {
