@@ -113,7 +113,6 @@ class RecyclerViewActivity : AppCompatActivity() {
                 )
             )
         }
-
         binding.listAdapterButton.setOnClickListener {
             viewModel.sendIntent(
                 RecyclerViewIntent.RecyclerViewButtonClickIntent(
@@ -126,17 +125,7 @@ class RecyclerViewActivity : AppCompatActivity() {
     // initRecyclerView(): Creates and attaches the selected adapter type to the RecyclerView.
     private fun initRecyclerView(adapterType: RecyclerViewAdapterType) {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-
-        when (adapterType) {
-            RecyclerViewAdapterType.LIST_ADAPTER -> {
-                recyclerViewListAdapter = RecyclerViewListAdapter()
-                binding.recyclerView.adapter = recyclerViewListAdapter
-            }
-            RecyclerViewAdapterType.RECYCLER_VIEW -> {
-                recyclerViewAdapter = RecyclerViewAdapter()
-                binding.recyclerView.adapter = recyclerViewAdapter
-            }
-        }
+        updateRecyclerViewAdapter(adapterType = adapterType)
     }
 
     // updateRecyclerViewData(): Updates the data list given the adapter type and updates the appropriate adapter.
@@ -147,9 +136,25 @@ class RecyclerViewActivity : AppCompatActivity() {
         when (adapterType) {
             RecyclerViewAdapterType.LIST_ADAPTER ->
                 recyclerViewListAdapter.submitList(dataList)
+            RecyclerViewAdapterType.PAGING_DATA_ADAPTER -> {}
             RecyclerViewAdapterType.RECYCLER_VIEW -> {
                 recyclerViewAdapter.updateList(dataList)
                 recyclerViewAdapter.notifyDataSetChanged()
+            }
+        }
+    }
+
+    // updateRecyclerViewAdapter(): Updates the RecyclerView adapter based on the adapterType.
+    private fun updateRecyclerViewAdapter(adapterType: RecyclerViewAdapterType) {
+        when (adapterType) {
+            RecyclerViewAdapterType.LIST_ADAPTER -> {
+                recyclerViewListAdapter = RecyclerViewListAdapter()
+                binding.recyclerView.adapter = recyclerViewListAdapter
+            }
+            RecyclerViewAdapterType.PAGING_DATA_ADAPTER -> {}
+            RecyclerViewAdapterType.RECYCLER_VIEW -> {
+                recyclerViewAdapter = RecyclerViewAdapter()
+                binding.recyclerView.adapter = recyclerViewAdapter
             }
         }
     }
@@ -158,6 +163,7 @@ class RecyclerViewActivity : AppCompatActivity() {
     private fun updateToolbarTitle(adapterType: RecyclerViewAdapterType) {
         binding.recyclerViewToolbar.title = when (adapterType) {
             RecyclerViewAdapterType.LIST_ADAPTER -> getString(R.string.list_adapter)
+            RecyclerViewAdapterType.PAGING_DATA_ADAPTER -> getString(R.string.paging_data_adapter)
             RecyclerViewAdapterType.RECYCLER_VIEW -> getString(R.string.recycler_view)
         }
     }
