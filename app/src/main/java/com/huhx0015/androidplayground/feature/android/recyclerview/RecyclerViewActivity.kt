@@ -2,6 +2,7 @@ package com.huhx0015.androidplayground.feature.android.recyclerview
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -10,12 +11,14 @@ import com.huhx0015.androidplayground.databinding.ActivityRecyclerViewBinding
 
 class RecyclerViewActivity : AppCompatActivity() {
 
+    private val viewModel: RecyclerViewViewModel by viewModels()
     private lateinit var binding: ActivityRecyclerViewBinding
     private lateinit var recyclerViewAdapter: RecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
+        viewModel.sendIntent(RecyclerViewIntent.InitRecyclerView)
     }
 
     private fun initView() {

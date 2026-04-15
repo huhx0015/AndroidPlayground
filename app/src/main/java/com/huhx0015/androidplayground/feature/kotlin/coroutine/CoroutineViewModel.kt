@@ -1,7 +1,6 @@
 package com.huhx0015.androidplayground.feature.kotlin.coroutine
 
 import android.os.SystemClock
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.huhx0015.androidplayground.core.architecture.BaseViewModel
 import java.time.LocalTime
@@ -32,22 +31,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 
-class CoroutineViewModel : ViewModel() {
+class CoroutineViewModel : BaseViewModel<CoroutineState, CoroutineIntent, CoroutineEvent>() {
 
-  private val impl =
-    object : BaseViewModel<CoroutineState, CoroutineIntent, CoroutineEvent>(viewModelScope) {
-      private val _state = MutableStateFlow(CoroutineState())
-      override val state: StateFlow<CoroutineState> = _state.asStateFlow()
+  private val _state = MutableStateFlow(CoroutineState())
+  override val state: StateFlow<CoroutineState> = _state.asStateFlow()
 
-      private val eventChannel = Channel<CoroutineEvent>(Channel.BUFFERED)
-      override val events: Flow<CoroutineEvent> = eventChannel.receiveAsFlow()
+  private val eventChannel = Channel<CoroutineEvent>(Channel.BUFFERED)
+  override val events: Flow<CoroutineEvent> = eventChannel.receiveAsFlow()
 
-      private val timeFmt: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
+  private val timeFmt: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
 
-      private var cancellableDemoJob: Job? = null
-      private var flowDemoJob: Job? = null
+  private var cancellableDemoJob: Job? = null
+  private var flowDemoJob: Job? = null
 
-      override suspend fun processIntent(intent: CoroutineIntent) {
+  override suspend fun processIntent(intent: CoroutineIntent) {
         when (intent) {
           is CoroutineIntent.SelectSection -> {
             _state.update { it.copy(selectedSection = intent.section) }
@@ -72,7 +69,7 @@ class CoroutineViewModel : ViewModel() {
         }
       }
 
-      private fun appendLog(message: String) {
+  private fun appendLog(message: String) {
         val stamp = LocalTime.now().format(timeFmt)
         _state.update { s ->
           val next = (s.logLines + "[$stamp] $message").takeLast(LOG_CAP)
@@ -80,14 +77,14 @@ class CoroutineViewModel : ViewModel() {
         }
       }
 
-      private suspend fun runSampleWork() {
+  private suspend fun runSampleWork() {
         _state.update { it.copy(isLoading = true, statusText = "Working…") }
         delay(1_500L)
         _state.update { it.copy(isLoading = false, statusText = "Done") }
         eventChannel.send(CoroutineEvent.ShowMessage("Sample coroutine finished"))
       }
 
-      private suspend fun runDispatcherDemo() {
+  private suspend fun runDispatcherDemo() {
         appendLog("Before withContext: ${threadLabel()}")
         val checksum = withContext(Dispatchers.Default) {
           appendLog("Inside Default: ${threadLabel()}")
@@ -102,7 +99,7 @@ class CoroutineViewModel : ViewModel() {
         eventChannel.send(CoroutineEvent.ShowMessage("Dispatcher demo finished"))
       }
 
-      private suspend fun runAsyncParallelDemo() {
+  private suspend fun runAsyncParallelDemo() {
         val t0 = SystemClock.elapsedRealtime()
         coroutineScope {
           val a = async { delay(800); "A" }
@@ -113,7 +110,7 @@ class CoroutineViewModel : ViewModel() {
         }
       }
 
-      private suspend fun runAsyncSequentialDemo() {
+  private suspend fun runAsyncSequentialDemo() {
         val t0 = SystemClock.elapsedRealtime()
         delay(800)
         delay(800)
@@ -121,9 +118,9 @@ class CoroutineViewModel : ViewModel() {
         appendLog("Sequential delays in ${elapsed}ms (expect ~1600ms)")
       }
 
-      private fun startLongRunningWork() {
+  private fun startLongRunningWork() {
         cancellableDemoJob?.cancel()
-        cancellableDemoJob = this@CoroutineViewModel.viewModelScope.launch {
+        cancellableDemoJob = viewModelScope.launch {
           try {
             _state.update { it.copy(cancellationRunning = true, cancellationProgress = 0) }
             repeat(30) { step ->
@@ -141,10 +138,10 @@ class CoroutineViewModel : ViewModel() {
         }
       }
 
-      private fun cancelLongRunningWork() {
+  private fun cancelLongRunningWork() {
         cancellableDemoJob?.cancel()
         cancellableDemoJob = null
-        this@CoroutineViewModel.viewModelScope.launch {
+        viewModelScope.launch {
           withContext(NonCancellable) {
             delay(200L)
             appendLog("NonCancellable block ran after cancel (simulated critical cleanup)")
@@ -152,7 +149,7 @@ class CoroutineViewModel : ViewModel() {
         }
       }
 
-      private suspend fun runTryCatchExceptionDemo() {
+  private suspend fun runTryCatchExceptionDemo() {
         try {
           delay(50)
           error("Expected failure for try/catch demo")
@@ -162,19 +159,19 @@ class CoroutineViewModel : ViewModel() {
         _state.update { it.copy(statusText = "Exceptions: try/catch around suspend call") }
       }
 
-      private fun runCoroutineExceptionHandlerDemo() {
+  private fun runCoroutineExceptionHandlerDemo() {
         val handler = CoroutineExceptionHandler { _, throwable ->
           appendLog("CoroutineExceptionHandler: ${throwable::class.simpleName}: ${throwable.message}")
         }
-        this@CoroutineViewModel.viewModelScope.launch(handler) {
+        viewModelScope.launch(handler) {
           delay(30)
           error("Failure delivered to CoroutineExceptionHandler")
         }
       }
 
-      private fun runColdFlowTwoCollectorsDemo() {
+  private fun runColdFlowTwoCollectorsDemo() {
         flowDemoJob?.cancel()
-        flowDemoJob = this@CoroutineViewModel.viewModelScope.launch {
+        flowDemoJob = viewModelScope.launch {
           appendLog("Cold: two concurrent collectors → upstream runs twice")
           val source = flow {
             repeat(4) { i ->
@@ -190,9 +187,9 @@ class CoroutineViewModel : ViewModel() {
         }
       }
 
-      private fun runSharedFlowTwoCollectorsDemo() {
+  private fun runSharedFlowTwoCollectorsDemo() {
         flowDemoJob?.cancel()
-        flowDemoJob = this@CoroutineViewModel.viewModelScope.launch {
+        flowDemoJob = viewModelScope.launch {
           appendLog("shareIn: staggered second subscriber (replay=1 catches early tick)")
           val shareScope: CoroutineScope = this
           val shared = flow {
@@ -214,7 +211,7 @@ class CoroutineViewModel : ViewModel() {
         }
       }
 
-      private suspend fun runChannelBackpressureDemo() {
+  private suspend fun runChannelBackpressureDemo() {
         appendLog("Bounded Channel(capacity=2): trySend may suspend or fail when full")
         val channel = Channel<Int>(capacity = 2)
         coroutineScope {
@@ -238,7 +235,7 @@ class CoroutineViewModel : ViewModel() {
         }
       }
 
-      private suspend fun runCoroutineScopeFailureDemo() {
+  private suspend fun runCoroutineScopeFailureDemo() {
         try {
           coroutineScope {
             launch {
@@ -257,7 +254,7 @@ class CoroutineViewModel : ViewModel() {
         }
       }
 
-      private suspend fun runSupervisorScopeFailureDemo() {
+  private suspend fun runSupervisorScopeFailureDemo() {
         supervisorScope {
           val good = async {
             delay(120L)
@@ -275,8 +272,8 @@ class CoroutineViewModel : ViewModel() {
         }
       }
 
-      private fun runNonCancellableCleanupDemo() {
-        this@CoroutineViewModel.viewModelScope.launch {
+  private fun runNonCancellableCleanupDemo() {
+        viewModelScope.launch {
           try {
             repeat(8) { step ->
               ensureActive()
@@ -299,12 +296,7 @@ class CoroutineViewModel : ViewModel() {
         }
       }
 
-      private fun threadLabel(): String = Thread.currentThread().name
-    }
-
-  val state: StateFlow<CoroutineState> get() = impl.state
-  val events: Flow<CoroutineEvent> get() = impl.events
-  fun sendIntent(intent: CoroutineIntent) = impl.sendIntent(intent)
+  private fun threadLabel(): String = Thread.currentThread().name
 
   private companion object {
     const val LOG_CAP = 40
