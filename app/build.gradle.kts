@@ -39,7 +39,6 @@ dependencies {
   implementation(project(":core:architecture"))
   implementation(project(":core:data"))
   implementation(project(":core:domain"))
-  implementation(project(":core:domain:model"))
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -60,6 +59,7 @@ dependencies {
   implementation(libs.androidx.activity)
   implementation(libs.androidx.constraintlayout)
   testImplementation(libs.junit)
+  testImplementation(libs.kotlinx.coroutines.test)
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)
   androidTestImplementation(platform(libs.androidx.compose.bom))

@@ -13,6 +13,5 @@ sealed class EntranceTopic {
 
   data object RecyclerView : EntranceTopic() {
     override val title: String = "RecyclerView"
-
   }
 }

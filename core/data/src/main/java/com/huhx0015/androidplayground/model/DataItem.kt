@@ -1,4 +1,4 @@
-package com.example.model
+package com.huhx0015.androidplayground.model
 
 import kotlin.random.Random
 
