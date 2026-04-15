@@ -60,7 +60,7 @@ class RecyclerViewActivity : AppCompatActivity() {
 
     // onStateChanged(): Applies the latest state by setting adapter, data, and toolbar title.
     private fun onStateChanged(state: RecyclerViewState) {
-        initRecyclerView(adapterType = state.adapterType)
+        updateRecyclerViewAdapter(adapterType = state.adapterType)
         updateRecyclerViewData(adapterType = state.adapterType, dataList = state.dataList)
         updateToolbarTitle(adapterType = state.adapterType)
     }
@@ -81,7 +81,7 @@ class RecyclerViewActivity : AppCompatActivity() {
         initScreen()
         initToolbar()
         initButtons()
-        initRecyclerView(adapterType = RecyclerViewAdapterType.RECYCLER_VIEW)
+        initRecyclerView()
     }
 
     // initScreen(): Inflates the view binding, sets the content view, and applies system bar insets.
@@ -123,9 +123,9 @@ class RecyclerViewActivity : AppCompatActivity() {
     }
 
     // initRecyclerView(): Creates and attaches the selected adapter type to the RecyclerView.
-    private fun initRecyclerView(adapterType: RecyclerViewAdapterType) {
+    private fun initRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        updateRecyclerViewAdapter(adapterType = adapterType)
+        updateRecyclerViewAdapter()
     }
 
     // updateRecyclerViewData(): Updates the data list given the adapter type and updates the appropriate adapter.
@@ -145,7 +145,10 @@ class RecyclerViewActivity : AppCompatActivity() {
     }
 
     // updateRecyclerViewAdapter(): Updates the RecyclerView adapter based on the adapterType.
-    private fun updateRecyclerViewAdapter(adapterType: RecyclerViewAdapterType) {
+    // Default value is `RecyclerViewAdapterType.RECYCLER_VIEW` if no value provided for adapterType.
+    private fun updateRecyclerViewAdapter(
+        adapterType: RecyclerViewAdapterType = RecyclerViewAdapterType.RECYCLER_VIEW
+    ) {
         when (adapterType) {
             RecyclerViewAdapterType.LIST_ADAPTER -> {
                 recyclerViewListAdapter = RecyclerViewListAdapter()
