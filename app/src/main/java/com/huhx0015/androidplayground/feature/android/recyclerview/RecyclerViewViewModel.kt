@@ -27,6 +27,7 @@ class RecyclerViewViewModel : BaseViewModel<RecyclerViewState, RecyclerViewInten
   override suspend fun processIntent(intent: RecyclerViewIntent) {
     when (intent) {
       is RecyclerViewIntent.InitRecyclerViewIntent -> onInitRecyclerView()
+      is RecyclerViewIntent.LoadMoreDataIntent -> onLoadMoreData()
       is RecyclerViewIntent.RecyclerViewButtonClickIntent ->
         onRecyclerViewButtonClicked(adapterType = intent.adapterType)
     }
@@ -37,6 +38,21 @@ class RecyclerViewViewModel : BaseViewModel<RecyclerViewState, RecyclerViewInten
     val dataItemList = buildRandomizedData()
     _state.update { state -> state.copy(dataList = dataItemList) }
     _eventChannel.send(RecyclerViewEvent.RecyclerViewRefreshEvent)
+  }
+
+  // onLoadMoreData(): Appends additional data to the dataList and updates the RecyclerViewState
+  // with the updated dataList.
+  private fun onLoadMoreData() {
+    if (state.value.isLoadingMore) return
+    val dataList = state.value.dataList
+
+    if (dataList.isEmpty()) return
+    _state.update { it.copy(isLoadingMore = true) }
+
+    val mergedDataItemList = dataList.toMutableList()
+    mergedDataItemList.addAll(buildRandomizedData())
+
+    _state.update { it.copy(dataList = mergedDataItemList, isLoadingMore = false) }
   }
 
   // onRecyclerViewButtonClicked(): Regenerates data, switches adapter type, and emits a refresh event.

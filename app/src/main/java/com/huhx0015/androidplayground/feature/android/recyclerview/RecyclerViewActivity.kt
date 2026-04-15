@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.huhx0015.androidplayground.R
 import com.huhx0015.androidplayground.databinding.ActivityRecyclerViewBinding
 import com.huhx0015.androidplayground.model.DataItem
@@ -20,8 +21,10 @@ class RecyclerViewActivity : AppCompatActivity() {
 
     private val viewModel: RecyclerViewViewModel by viewModels()
     private lateinit var binding: ActivityRecyclerViewBinding
+    private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var recyclerViewAdapter: RecyclerViewAdapter
     private lateinit var recyclerViewListAdapter: RecyclerViewListAdapter
+    private var attachedAdapterType: RecyclerViewAdapterType? = null
 
     // onCreate(): Initializes the screen, starts observers, and triggers initial RecyclerView setup.
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,8 +127,26 @@ class RecyclerViewActivity : AppCompatActivity() {
 
     // initRecyclerView(): Creates and attaches the selected adapter type to the RecyclerView.
     private fun initRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.layoutManager = linearLayoutManager
         updateRecyclerViewAdapter()
+        updateRecyclerViewPaginationBehavior()
+    }
+
+    // updateRecyclerViewPaginationBehavior(): Implements the infinite scroll behavior to load and
+    // show more data items in the RecyclerView.
+    private fun updateRecyclerViewPaginationBehavior() {
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val isLoadingMore = viewModel.state.value.isLoadingMore
+                val currentDataItemSize = viewModel.state.value.dataList.size
+                if (!isLoadingMore) {
+                    if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == currentDataItemSize - 1) {
+                        viewModel.sendIntent(RecyclerViewIntent.LoadMoreDataIntent)
+                    }
+                }
+            }
+        })
     }
 
     // updateRecyclerViewData(): Updates the data list given the adapter type and updates the appropriate adapter.
@@ -149,15 +170,19 @@ class RecyclerViewActivity : AppCompatActivity() {
     private fun updateRecyclerViewAdapter(
         adapterType: RecyclerViewAdapterType = RecyclerViewAdapterType.RECYCLER_VIEW
     ) {
+        if (attachedAdapterType == adapterType) return
+
         when (adapterType) {
             RecyclerViewAdapterType.LIST_ADAPTER -> {
                 recyclerViewListAdapter = RecyclerViewListAdapter()
                 binding.recyclerView.adapter = recyclerViewListAdapter
+                attachedAdapterType = adapterType
             }
             RecyclerViewAdapterType.PAGING_DATA_ADAPTER -> {}
             RecyclerViewAdapterType.RECYCLER_VIEW -> {
                 recyclerViewAdapter = RecyclerViewAdapter()
                 binding.recyclerView.adapter = recyclerViewAdapter
+                attachedAdapterType = adapterType
             }
         }
     }
