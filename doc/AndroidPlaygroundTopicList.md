@@ -57,3 +57,12 @@ This document tracks topics covered in AndroidPlayground, with a brief summary a
 
 * **StateFlow, SharedFlow**  
   Summary: Add dedicated topic/module covering hot flow patterns, replay, and one-off events.
+
+* **Jetpack Compose: Flexbox**  
+  Summary: Add a Compose layout example using flexible row/column wrapping behavior for responsive UI.
+
+* **Jetpack Compose: Grid**  
+  Summary: Add a Compose `LazyVerticalGrid`/`LazyHorizontalGrid` example for efficient grid-based lists.
+
+* **Fragment: Backstack**  
+  Summary: Add a fragment navigation example demonstrating add/replace transactions and back stack behavior.
