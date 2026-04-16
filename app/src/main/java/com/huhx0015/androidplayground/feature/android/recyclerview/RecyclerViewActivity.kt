@@ -24,7 +24,6 @@ class RecyclerViewActivity : AppCompatActivity() {
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var recyclerViewAdapter: RecyclerViewAdapter
     private lateinit var recyclerViewListAdapter: RecyclerViewListAdapter
-    private var attachedAdapterType: RecyclerViewAdapterType? = null
 
     // onCreate(): Initializes the screen, starts observers, and triggers initial RecyclerView setup.
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -170,19 +169,18 @@ class RecyclerViewActivity : AppCompatActivity() {
     private fun updateRecyclerViewAdapter(
         adapterType: RecyclerViewAdapterType = RecyclerViewAdapterType.RECYCLER_VIEW
     ) {
-        if (attachedAdapterType == adapterType) return
-
+        val currentAdapter = binding.recyclerView.adapter
         when (adapterType) {
             RecyclerViewAdapterType.LIST_ADAPTER -> {
+                if (currentAdapter is RecyclerViewListAdapter) return
                 recyclerViewListAdapter = RecyclerViewListAdapter()
                 binding.recyclerView.adapter = recyclerViewListAdapter
-                attachedAdapterType = adapterType
             }
             RecyclerViewAdapterType.PAGING_DATA_ADAPTER -> {}
             RecyclerViewAdapterType.RECYCLER_VIEW -> {
+                if (currentAdapter is RecyclerViewAdapter) return
                 recyclerViewAdapter = RecyclerViewAdapter()
                 binding.recyclerView.adapter = recyclerViewAdapter
-                attachedAdapterType = adapterType
             }
         }
     }
