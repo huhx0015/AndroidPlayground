@@ -39,11 +39,13 @@ class RecyclerViewActivity : AppCompatActivity() {
         viewModel.sendIntent(RecyclerViewIntent.InitRecyclerViewIntent)
     }
 
+    // onSaveInstanceState(): Persists the first visible RecyclerView item position across recreation.
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(KEY_INSTANCE_LIST_POSITION, linearLayoutManager.findFirstVisibleItemPosition())
         super.onSaveInstanceState(outState)
     }
 
+    // onRestoreInstanceState(): Restores and applies the saved RecyclerView scroll position.
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         val listPosition = savedInstanceState.getInt(KEY_INSTANCE_LIST_POSITION)
