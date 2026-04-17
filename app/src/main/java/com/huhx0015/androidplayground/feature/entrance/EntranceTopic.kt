@@ -11,6 +11,10 @@ sealed class EntranceTopic {
     override val title = "Kotlin sample"
   }
 
+  data object LazyList : EntranceTopic() {
+    override val title = "LazyList"
+  }
+
   data object RecyclerView : EntranceTopic() {
     override val title: String = "RecyclerView"
   }
