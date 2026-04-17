@@ -20,10 +20,16 @@ import kotlinx.coroutines.launch
 class RecyclerViewActivity : AppCompatActivity() {
 
     private val viewModel: RecyclerViewViewModel by viewModels()
+
     private lateinit var binding: ActivityRecyclerViewBinding
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var recyclerViewAdapter: RecyclerViewAdapter
     private lateinit var recyclerViewListAdapter: RecyclerViewListAdapter
+
+    companion object {
+        private const val KEY_INSTANCE_LIST_POSITION = "list_position"
+        private const val VAL_LIST_FIRST_POSITION = 0
+    }
 
     // onCreate(): Initializes the screen, starts observers, and triggers initial RecyclerView setup.
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +37,17 @@ class RecyclerViewActivity : AppCompatActivity() {
         initView()
         observe()
         viewModel.sendIntent(RecyclerViewIntent.InitRecyclerViewIntent)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(KEY_INSTANCE_LIST_POSITION, linearLayoutManager.findFirstVisibleItemPosition())
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        val listPosition = savedInstanceState.getInt(KEY_INSTANCE_LIST_POSITION)
+        updateRecyclerViewPosition(position = listPosition)
     }
 
     // onOptionsItemSelected(): Handles toolbar item actions and closes the screen when home is pressed.
@@ -71,9 +88,7 @@ class RecyclerViewActivity : AppCompatActivity() {
     private fun onEvent(event: RecyclerViewEvent) {
         when (event) {
             RecyclerViewEvent.RecyclerViewRefreshEvent -> {
-                if (recyclerViewAdapter.itemCount > 0) {
-                    binding.recyclerView.scrollToPosition(0)
-                }
+                updateRecyclerViewPosition(position = VAL_LIST_FIRST_POSITION)
             }
         }
     }
@@ -132,6 +147,27 @@ class RecyclerViewActivity : AppCompatActivity() {
         updateRecyclerViewPaginationBehavior()
     }
 
+    // updateRecyclerViewAdapter(): Updates the RecyclerView adapter based on the adapterType.
+    // Default value is `RecyclerViewAdapterType.RECYCLER_VIEW` if no value provided for adapterType.
+    private fun updateRecyclerViewAdapter(
+        adapterType: RecyclerViewAdapterType = RecyclerViewAdapterType.RECYCLER_VIEW
+    ) {
+        val currentAdapter = binding.recyclerView.adapter
+        when (adapterType) {
+            RecyclerViewAdapterType.LIST_ADAPTER -> {
+                if (currentAdapter is RecyclerViewListAdapter) return
+                recyclerViewListAdapter = RecyclerViewListAdapter()
+                binding.recyclerView.adapter = recyclerViewListAdapter
+            }
+            RecyclerViewAdapterType.PAGING_DATA_ADAPTER -> {}
+            RecyclerViewAdapterType.RECYCLER_VIEW -> {
+                if (currentAdapter is RecyclerViewAdapter) return
+                recyclerViewAdapter = RecyclerViewAdapter()
+                binding.recyclerView.adapter = recyclerViewAdapter
+            }
+        }
+    }
+
     // updateRecyclerViewPaginationBehavior(): Implements the infinite scroll behavior to load and
     // show more data items in the RecyclerView.
     private fun updateRecyclerViewPaginationBehavior() {
@@ -164,24 +200,10 @@ class RecyclerViewActivity : AppCompatActivity() {
         }
     }
 
-    // updateRecyclerViewAdapter(): Updates the RecyclerView adapter based on the adapterType.
-    // Default value is `RecyclerViewAdapterType.RECYCLER_VIEW` if no value provided for adapterType.
-    private fun updateRecyclerViewAdapter(
-        adapterType: RecyclerViewAdapterType = RecyclerViewAdapterType.RECYCLER_VIEW
-    ) {
-        val currentAdapter = binding.recyclerView.adapter
-        when (adapterType) {
-            RecyclerViewAdapterType.LIST_ADAPTER -> {
-                if (currentAdapter is RecyclerViewListAdapter) return
-                recyclerViewListAdapter = RecyclerViewListAdapter()
-                binding.recyclerView.adapter = recyclerViewListAdapter
-            }
-            RecyclerViewAdapterType.PAGING_DATA_ADAPTER -> {}
-            RecyclerViewAdapterType.RECYCLER_VIEW -> {
-                if (currentAdapter is RecyclerViewAdapter) return
-                recyclerViewAdapter = RecyclerViewAdapter()
-                binding.recyclerView.adapter = recyclerViewAdapter
-            }
+    // updateRecyclerViewPosition(): Scrolls to the the designated position in the RecyclerView.
+    private fun updateRecyclerViewPosition(position: Int) {
+        if (recyclerViewAdapter.itemCount > 0) {
+            binding.recyclerView.scrollToPosition(position)
         }
     }
 
