@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.android.lazylist.compose
+package com.huhx0015.androidplayground.feature.android.lazylist
 
 import androidx.lifecycle.ViewModel
 import com.huhx0015.androidplayground.model.randomizeData

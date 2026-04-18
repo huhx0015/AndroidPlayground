@@ -4,9 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.huhx0015.androidplayground.feature.android.lazylist.compose.LazyListScreen
-import com.huhx0015.androidplayground.feature.android.lazylist.compose.LazyListViewModel
-import com.huhx0015.androidplayground.model.randomizeData
+import com.huhx0015.androidplayground.feature.android.lazylist.compose.LazyListNavigationScreen
 
 class LazyListActivity : ComponentActivity() {
 
@@ -20,9 +18,7 @@ class LazyListActivity : ComponentActivity() {
 
     private fun initCompose() {
         setContent {
-            LazyListScreen(
-                dataList = randomizeData(itemQuality = 100)
-            )
+            LazyListNavigationScreen()
         }
     }
 }
