@@ -13,9 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.huhx0015.androidplayground.feature.android.lazylist.LazyListViewModel
+import com.huhx0015.androidplayground.feature.android.lazylist.navigation.Screen
+import com.huhx0015.androidplayground.model.DataItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,7 +27,7 @@ fun LazyListNavigationScreen(
 ) {
     val viewModel: LazyListViewModel = viewModel()
     val state = viewModel.state.collectAsState()
-    val navController: NavController = rememberNavController()
+    val navController = rememberNavController()
 
     Column(modifier = modifier.fillMaxSize()) {
         TopAppBar(
@@ -41,7 +44,23 @@ fun LazyListNavigationScreen(
                 actionIconContentColor = Color.White
             )
         )
-        LazyListScreen(dataList = state.value.dataList)
+        NavHost(
+            navController = navController,
+            startDestination = Screen.List.route,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            composable(route = Screen.List.route) {
+                LazyListScreen(
+                    dataList = state.value.dataList,
+                    onRowClick = {
+                        navController.navigate(Screen.Detail.route)
+                    }
+                )
+            }
+            composable(route = Screen.Detail.route) {
+                LazyListDetailsScreen(dataItem = DataItem())
+            }
+        }
     }
 }
 

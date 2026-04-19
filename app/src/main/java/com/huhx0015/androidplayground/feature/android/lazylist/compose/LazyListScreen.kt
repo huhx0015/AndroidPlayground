@@ -1,5 +1,6 @@
 package com.huhx0015.androidplayground.feature.android.lazylist.compose
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import com.huhx0015.androidplayground.model.randomizeData
 @Composable
 internal fun LazyListScreen(
     dataList: List<DataItem>,
+    onRowClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -29,7 +31,9 @@ internal fun LazyListScreen(
     ) {
         items(dataList) { data ->
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onRowClick.invoke() }
             ) {
                 Column(
                     modifier = Modifier.padding(all = 8.dp)
@@ -49,6 +53,9 @@ internal fun LazyListScreen(
                 }
             }
         }
+        item {
+
+        }
     }
 }
 
@@ -56,6 +63,7 @@ internal fun LazyListScreen(
 @Composable
 fun LazyListScreenPreview() {
     LazyListScreen(
-        dataList = randomizeData(itemQuality = 100)
+        dataList = randomizeData(itemQuality = 100),
+        onRowClick = {}
     )
 }
