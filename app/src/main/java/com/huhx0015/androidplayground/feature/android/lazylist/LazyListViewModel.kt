@@ -1,6 +1,7 @@
 package com.huhx0015.androidplayground.feature.android.lazylist
 
 import androidx.lifecycle.ViewModel
+import com.huhx0015.androidplayground.model.DataItem
 import com.huhx0015.androidplayground.model.randomizeData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,5 +19,9 @@ class LazyListViewModel : ViewModel() {
                 dataList = randomizeData(itemQuality = 100)
             )
         }
+    }
+
+    fun getDataItemById(id: Int): DataItem? {
+        return _state.value.dataList.firstOrNull { it.id == id }
     }
 }

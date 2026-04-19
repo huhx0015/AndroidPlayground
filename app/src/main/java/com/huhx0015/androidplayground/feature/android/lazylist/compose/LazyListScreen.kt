@@ -23,7 +23,7 @@ import com.huhx0015.androidplayground.model.randomizeData
 @Composable
 internal fun LazyListScreen(
     dataList: List<DataItem>,
-    onRowClick: () -> Unit,
+    onRowClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -33,7 +33,7 @@ internal fun LazyListScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onRowClick.invoke() }
+                    .clickable { onRowClick.invoke(data.id) }
             ) {
                 Column(
                     modifier = Modifier.padding(all = 8.dp)
