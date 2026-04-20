@@ -9,12 +9,11 @@ import com.huhx0015.androidplayground.ui.theme.AndroidPlaygroundTheme
 
 class LazyListActivity : ComponentActivity() {
 
-    private val viewModel: LazyListViewModel by viewModels()
+    val viewModel: LazyListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initCompose()
-        viewModel.loadData()
     }
 
     private fun initCompose() {

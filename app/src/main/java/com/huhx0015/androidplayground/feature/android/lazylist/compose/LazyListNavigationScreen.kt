@@ -33,6 +33,7 @@ fun LazyListNavigationScreen(
     val navController = rememberNavController()
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
@@ -48,6 +49,7 @@ fun LazyListNavigationScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
+                            // TODO: Need to fix finishing activity if at the top of the stack.
                             navController.navigateUp()
                         }
                     ) {
