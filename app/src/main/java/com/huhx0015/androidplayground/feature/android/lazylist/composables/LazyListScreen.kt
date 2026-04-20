@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.android.lazylist.compose
+package com.huhx0015.androidplayground.feature.android.lazylist.composables
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

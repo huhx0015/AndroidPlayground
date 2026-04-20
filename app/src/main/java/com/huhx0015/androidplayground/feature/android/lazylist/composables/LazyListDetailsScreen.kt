@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.huhx0015.androidplayground.feature.android.lazylist.compose
+package com.huhx0015.androidplayground.feature.android.lazylist.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

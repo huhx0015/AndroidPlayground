@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.entrance.compose
+package com.huhx0015.androidplayground.feature.entrance.composables
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

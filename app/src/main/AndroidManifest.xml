@@ -28,12 +28,24 @@
             android:exported="false" />
 
         <activity
-            android:name=".feature.android.lazylist.practice.practice1.LazyListPractice1Activity"
-            android:exported="true">
+            android:name=".feature.android.compose.ComposeActivity"
+            android:exported="true"
+            android:label="@string/title_activity_compose"
+            android:theme="@style/Theme.AndroidPlayground">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 <!--                <category android:name="android.intent.category.LAUNCHER" />-->
 <!--            </intent-filter>-->
+        </activity>
+
+        <activity
+            android:name=".feature.android.lazylist.practice.practice1.LazyListPractice1Activity"
+            android:exported="true">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
         <activity

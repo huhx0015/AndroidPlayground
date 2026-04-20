@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.android.lazylist.practice.practice1.compose
+package com.huhx0015.androidplayground.feature.android.lazylist.practice.practice1.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

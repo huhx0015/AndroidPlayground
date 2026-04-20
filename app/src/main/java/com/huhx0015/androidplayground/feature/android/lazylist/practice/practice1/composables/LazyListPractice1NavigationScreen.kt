@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.android.lazylist.practice.practice1.compose
+package com.huhx0015.androidplayground.feature.android.lazylist.practice.practice1.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

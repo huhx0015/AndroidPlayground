@@ -10,7 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.huhx0015.androidplayground.feature.entrance.compose.EntranceScreen
+import com.huhx0015.androidplayground.feature.entrance.composables.EntranceScreen
 import com.huhx0015.androidplayground.ui.theme.AndroidPlaygroundTheme
 
 class MainActivity : ComponentActivity() {

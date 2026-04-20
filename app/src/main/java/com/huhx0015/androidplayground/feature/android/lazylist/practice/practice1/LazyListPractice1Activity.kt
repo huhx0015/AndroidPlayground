@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.huhx0015.androidplayground.feature.android.lazylist.practice.practice1.compose.TestRunNavigationScreen
+import com.huhx0015.androidplayground.feature.android.lazylist.practice.practice1.composables.TestRunNavigationScreen
 
 /**
  *  ATTEMPT 1
