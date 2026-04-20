@@ -14,6 +14,9 @@ import androidx.compose.ui.unit.dp
 import com.huhx0015.androidplayground.model.DataItem
 
 @Composable
+/**
+ * Displays details for the selected data item using the shared row UI.
+ */
 internal fun LazyListDetailsScreen(
     dataItem: DataItem?,
     modifier: Modifier = Modifier

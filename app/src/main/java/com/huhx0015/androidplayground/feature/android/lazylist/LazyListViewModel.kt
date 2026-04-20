@@ -31,17 +31,26 @@ class LazyListViewModel(
         loadData()
     }
 
+    /**
+     * Loads the initial set of data for the lazy list screen.
+     */
     internal fun loadData() {
         //loadJsonData() // Uncomment to use JSON data for LazyList instead.
         loadMockData() // Uncomment to use mock data for LazyList instead.
     }
 
+    /**
+     * Loads list data from JSON once deserialization support is implemented.
+     */
     private fun loadJsonData() {
         viewModelScope.launch(Dispatchers.IO) {
             // TODO: Implement JSON deserializer logic here.
         }
     }
 
+    /**
+     * Loads mock data used by the lazy list screen.
+     */
     private fun loadMockData() {
         val dataList = randomizeData(itemQuality = 10)
         _state.update { state ->
@@ -49,11 +58,17 @@ class LazyListViewModel(
         }
     }
 
+    /**
+     * Loads the next page of data when the list reaches the bottom.
+     */
     internal fun loadMoreData() {
         // loadMoreJsonData()
         loadMoreMockData()
     }
 
+    /**
+     * Appends additional mock items and toggles loading-more state.
+     */
     private fun loadMoreMockData() {
         _state.update { state ->
             state.copy(isLoadingMore = true)
@@ -70,10 +85,16 @@ class LazyListViewModel(
         }
     }
 
+    /**
+     * Returns the currently loaded item matching the given id.
+     */
     internal fun getDataItemById(id: Int): DataItem? {
         return _state.value.dataList.firstOrNull { it.id == id }
     }
 
+    /**
+     * Persists and updates the currently selected lazy list item id.
+     */
     internal fun onItemSelected(itemId: String) {
         savedStateHandle[SELECTED_DATA_ITEM_ID] = itemId
         _state.update { it.copy(selectedItemId = itemId) }

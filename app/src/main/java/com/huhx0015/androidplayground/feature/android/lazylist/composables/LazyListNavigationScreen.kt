@@ -1,5 +1,6 @@
 package com.huhx0015.androidplayground.feature.android.lazylist.composables
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -25,12 +26,26 @@ import com.huhx0015.androidplayground.feature.android.lazylist.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+/**
+ * Renders the lazy list navigation host with a shared top app bar.
+ */
 fun LazyListNavigationScreen(
-    modifier: Modifier = Modifier
+    onBackButtonPress: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val viewModel: LazyListViewModel = viewModel()
     val state = viewModel.state.collectAsStateWithLifecycle()
     val navController = rememberNavController()
+
+    val handleBackNavigation = {
+        if (!navController.navigateUp()) {
+            onBackButtonPress()
+        }
+    }
+
+    BackHandler {
+        handleBackNavigation()
+    }
 
     Scaffold(
         modifier = modifier,
@@ -49,8 +64,7 @@ fun LazyListNavigationScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            // TODO: Need to fix finishing activity if at the top of the stack.
-                            navController.navigateUp()
+                            handleBackNavigation()
                         }
                     ) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
@@ -89,5 +103,5 @@ fun LazyListNavigationScreen(
 @Preview
 @Composable
 fun LazyListNavigationScreenPreview() {
-    LazyListNavigationScreen()
+    LazyListNavigationScreen(onBackButtonPress = {})
 }

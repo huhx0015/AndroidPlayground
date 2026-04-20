@@ -27,6 +27,9 @@ import com.huhx0015.androidplayground.feature.android.lazylist.LazyListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+/**
+ * Shows the lazy list UI state and triggers row click events.
+ */
 internal fun LazyListScreen(
     viewModel: LazyListViewModel,
     onRowClick: (Int) -> Unit,
@@ -106,6 +109,9 @@ internal fun LazyListScreen(
 }
 
 @Composable
+/**
+ * Monitors list scroll position and requests additional items near the end.
+ */
 private fun LazyListInfiniteListHandler(
     listState: androidx.compose.foundation.lazy.LazyListState,
     viewModel: LazyListViewModel

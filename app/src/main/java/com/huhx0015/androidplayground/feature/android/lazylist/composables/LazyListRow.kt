@@ -21,6 +21,9 @@ import com.huhx0015.androidplayground.model.DataItem
 import com.huhx0015.androidplayground.model.randomizeData
 
 @Composable
+/**
+ * Displays a clickable row for a single lazy list item.
+ */
 internal fun LazyListRow(
     dataItem: DataItem,
     modifier: Modifier = Modifier,
@@ -64,6 +67,9 @@ internal fun LazyListRow(
 
 @Composable
 @Preview
+/**
+ * Preview for [LazyListRow].
+ */
 private fun LazyListRowPreview() {
     LazyListRow(
         dataItem = randomizeData(1).first(),

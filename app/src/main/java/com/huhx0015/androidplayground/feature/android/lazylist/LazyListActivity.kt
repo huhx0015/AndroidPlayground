@@ -19,7 +19,9 @@ class LazyListActivity : ComponentActivity() {
     private fun initCompose() {
         setContent {
             AndroidPlaygroundTheme {
-                LazyListNavigationScreen()
+                LazyListNavigationScreen(
+                    onBackButtonPress = ::finish
+                )
             }
         }
     }
