@@ -13,6 +13,8 @@ class LazyListViewModel(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    // TODO: Need to address problem of data changing when screen orientation change occurs.
+
     companion object {
         private const val SELECTED_DATA_ITEM_ID = "selected_data_item_id"
     }
@@ -24,7 +26,7 @@ class LazyListViewModel(
     )
     val state: StateFlow<LazyListState> = _state.asStateFlow()
 
-    internal fun initData() {
+    internal fun loadData() {
         _state.update { state ->
             state.copy(
                 dataList = randomizeData(itemQuality = 100)

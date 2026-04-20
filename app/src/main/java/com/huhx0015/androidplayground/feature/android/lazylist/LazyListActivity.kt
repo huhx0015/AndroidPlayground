@@ -14,7 +14,7 @@ class LazyListActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initCompose()
-        viewModel.initData()
+        viewModel.loadData()
     }
 
     private fun initCompose() {
