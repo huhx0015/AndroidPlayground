@@ -43,9 +43,30 @@ class LazyListViewModel(
     }
 
     private fun loadMockData() {
-        val dataList = randomizeData(itemQuality = 100)
+        val dataList = randomizeData(itemQuality = 10)
         _state.update { state ->
             state.copy(dataList = dataList)
+        }
+    }
+
+    internal fun loadMoreData() {
+        // loadMoreJsonData()
+        loadMoreMockData()
+    }
+
+    private fun loadMoreMockData() {
+        _state.update { state ->
+            state.copy(isLoadingMore = true)
+        }
+
+        val dataList: MutableList<DataItem> = state.value.dataList.toMutableList()
+        dataList.addAll(randomizeData(itemQuality = 10))
+
+        _state.update { state ->
+            state.copy(
+                dataList = dataList,
+                isLoadingMore = false
+            )
         }
     }
 

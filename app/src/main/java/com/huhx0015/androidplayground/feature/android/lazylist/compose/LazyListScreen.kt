@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +33,12 @@ internal fun LazyListScreen(
     modifier: Modifier = Modifier
 ) {
     val state = viewModel.state.collectAsStateWithLifecycle()
+    val listState = rememberLazyListState()
+
+    LazyListInfiniteListHandler(
+        listState = listState,
+        viewModel = viewModel
+    )
 
     when {
         state.value.isLoading -> {
@@ -65,9 +74,13 @@ internal fun LazyListScreen(
 
         else -> {
             LazyColumn(
+                state = listState,
                 modifier = modifier.fillMaxWidth()
             ) {
-                items(state.value.dataList) { data ->
+                items(
+                    items = state.value.dataList,
+                    key = { it.id }
+                ) { data ->
                     LazyListRow(
                         dataItem = data,
                         modifier = modifier.padding(
@@ -77,9 +90,36 @@ internal fun LazyListScreen(
                         onRowClick = onRowClick
                     )
                 }
-                item {
-
+                if (state.value.isLoadingMore) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LazyListInfiniteListHandler(
+    listState: androidx.compose.foundation.lazy.LazyListState,
+    viewModel: LazyListViewModel
+) {
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            val layoutInfo = listState.layoutInfo
+            val totalItemsCount = layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+
+            lastVisibleItemIndex >= totalItemsCount - 3
+        }.collect { shouldLoadMore ->
+            if (shouldLoadMore) {
+                viewModel.loadMoreData()
             }
         }
     }
@@ -87,7 +127,7 @@ internal fun LazyListScreen(
 
 @Preview
 @Composable
-fun LazyListScreenPreview() {
+private fun LazyListScreenPreview() {
     val viewModel: LazyListViewModel = viewModel()
     LazyListScreen(
         viewModel = viewModel,
