@@ -1,0 +1,87 @@
+[
+  {
+    "id": 1,
+    "title": "Firion",
+    "subtitle": "Rebel Swordsman"
+  },
+  {
+    "id": 2,
+    "title": "Cecil Harvey",
+    "subtitle": "Paladin"
+  },
+  {
+    "id": 3,
+    "title": "Bartz Klauser",
+    "subtitle": "Adventurer"
+  },
+  {
+    "id": 4,
+    "title": "Terra Bradford",
+    "subtitle": "Magitek Knight"
+  },
+  {
+    "id": 5,
+    "title": "Cloud Strife",
+    "subtitle": "Ex-SOLDIER Mercenary"
+  },
+  {
+    "id": 6,
+    "title": "Squall Leonhart",
+    "subtitle": "SeeD"
+  },
+  {
+    "id": 7,
+    "title": "Zidane Tribal",
+    "subtitle": "Thief"
+  },
+  {
+    "id": 8,
+    "title": "Tidus",
+    "subtitle": "Ace"
+  },
+  {
+    "id": 9,
+    "title": "Vaan",
+    "subtitle": "Sky Pirate Aspirant"
+  },
+  {
+    "id": 10,
+    "title": "Lightning",
+    "subtitle": "Guardian Corps Soldier"
+  },
+  {
+    "id": 11,
+    "title": "Noctis Lucis Caelum",
+    "subtitle": "Prince"
+  },
+  {
+    "id": 12,
+    "title": "Clive Rosfield",
+    "subtitle": "Bearer / Dominant"
+  },
+  {
+    "id": 13,
+    "title": "Tir McDohl",
+    "subtitle": "Leader"
+  },
+  {
+    "id": 14,
+    "title": "Riou",
+    "subtitle": "Leader"
+  },
+  {
+    "id": 15,
+    "title": "Hugo",
+    "subtitle": "Warrior"
+  },
+  {
+    "id": 16,
+    "title": "Lazlo",
+    "subtitle": "Captain"
+  },
+  {
+    "id": 17,
+    "title": "Freyjadour Falenas",
+    "subtitle": null
+  }
+]

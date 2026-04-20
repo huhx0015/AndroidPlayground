@@ -1,57 +1,39 @@
 package com.huhx0015.androidplayground.feature.android.lazylist.compose
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.huhx0015.androidplayground.model.DataItem
-import com.huhx0015.androidplayground.model.randomizeData
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.huhx0015.androidplayground.feature.android.lazylist.LazyListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LazyListScreen(
-    dataList: List<DataItem>,
+    viewModel: LazyListViewModel,
     onRowClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val state = viewModel.state.collectAsStateWithLifecycle()
+
     LazyColumn(
         modifier = modifier.fillMaxWidth()
     ) {
-        items(dataList) { data ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onRowClick.invoke(data.id) }
-            ) {
-                Column(
-                    modifier = Modifier.padding(all = 8.dp)
-                ) {
-                    Text(
-                        text = data.title,
-                        fontSize = 14.sp,
-                        fontStyle = FontStyle.Normal,
-                        color = Color.Black
-                    )
-                    Text(
-                        text = data.subtitle,
-                        fontSize = 12.sp,
-                        fontStyle = FontStyle.Normal,
-                        color = Color.Black
-                    )
-                }
-            }
+        items(state.value.dataList) { data ->
+            LazyListRow(
+                dataItem = data,
+                modifier = modifier.padding(
+                    horizontal = 16.dp,
+                    vertical = 8.dp
+                ),
+                onRowClick = onRowClick
+            )
         }
         item {
 
@@ -62,8 +44,9 @@ internal fun LazyListScreen(
 @Preview
 @Composable
 fun LazyListScreenPreview() {
+    val viewModel: LazyListViewModel = viewModel()
     LazyListScreen(
-        dataList = randomizeData(itemQuality = 100),
+        viewModel = viewModel,
         onRowClick = {}
     )
 }

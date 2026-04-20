@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.huhx0015.androidplayground.feature.android.lazylist.compose.LazyListNavigationScreen
+import com.huhx0015.androidplayground.ui.theme.AndroidPlaygroundTheme
 
 class LazyListActivity : ComponentActivity() {
 
@@ -18,7 +19,9 @@ class LazyListActivity : ComponentActivity() {
 
     private fun initCompose() {
         setContent {
-            LazyListNavigationScreen()
+            AndroidPlaygroundTheme {
+                LazyListNavigationScreen()
+            }
         }
     }
 }
