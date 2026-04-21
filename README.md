@@ -1,6 +1,7 @@
 # AndroidPlayground
 
-AndroidPlayground is a personal Android/Kotlin test bed for experimenting with focused topics in UI, architecture, and concurrency.  
+AndroidPlayground is a Android/Kotlin test bed for experimenting with focused topics in UI, architecture, and concurrency.
+
 The project is intentionally structured as a sandbox where each screen demonstrates one concept clearly, so ideas can be tested quickly and revisited later.
 
 ## Project Summary
