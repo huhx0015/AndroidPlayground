@@ -16,13 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.toRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.huhx0015.androidplayground.feature.android.lazylist.LazyListViewModel
-import com.huhx0015.androidplayground.feature.android.lazylist.navigation.Screen
+import com.huhx0015.androidplayground.feature.android.lazylist.navigation.LazyListDetailsRoute
+import com.huhx0015.androidplayground.feature.android.lazylist.navigation.LazyListRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +35,6 @@ fun LazyListNavigationScreen(
     modifier: Modifier = Modifier,
 ) {
     val viewModel: LazyListViewModel = viewModel()
-    val state = viewModel.state.collectAsStateWithLifecycle()
     val navController = rememberNavController()
 
     val handleBackNavigation = {
@@ -75,25 +75,24 @@ fun LazyListNavigationScreen(
     ) { padding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.List.route,
+            startDestination = LazyListRoute,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            composable(route = Screen.List.route) {
+            composable<LazyListRoute> {
                 LazyListScreen(
                     viewModel = viewModel,
                     onRowClick = { dataItemId ->
-                        viewModel.onItemSelected(itemId = dataItemId.toString())
-                        navController.navigate(Screen.Detail.route)
+                        navController.navigate(
+                            route = LazyListDetailsRoute(itemId = dataItemId)
+                        )
                     }
                 )
             }
-            composable(route = Screen.Detail.route) {
-                val selectedItemId = state.value.selectedItemId?.toIntOrNull()
-                val dataItem = selectedItemId?.let { id ->
-                    viewModel.getDataItemById(id)
-                }
+            composable<LazyListDetailsRoute> { backStackEntry ->
+                val route: LazyListDetailsRoute = backStackEntry.toRoute()
+                val dataItem = viewModel.getDataItemById(route.itemId)
                 LazyListDetailsScreen(dataItem = dataItem)
             }
         }
