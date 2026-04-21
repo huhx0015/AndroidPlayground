@@ -1,6 +1,7 @@
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
+  kotlin("plugin.serialization") version "2.2.10"
 }
 
 android {
@@ -40,6 +41,7 @@ dependencies {
   implementation(project(":core:data"))
   implementation(project(":core:domain"))
 
+  implementation(libs.kotlinx.serialization.json)
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.lifecycle.runtime.ktx)
   implementation(libs.androidx.lifecycle.runtime.compose)

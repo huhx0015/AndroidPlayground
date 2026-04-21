@@ -1,10 +1,12 @@
 package com.huhx0015.androidplayground.feature.android.lazylist
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.huhx0015.androidplayground.model.DataItem
 import com.huhx0015.androidplayground.model.randomizeData
+import com.huhx0015.androidplayground.utils.JsonUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,38 +15,54 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LazyListViewModel(
+    application: Application,
     private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
+) : AndroidViewModel(application = application) {
 
     companion object {
         private const val SELECTED_DATA_ITEM_ID = "selected_data_item_id"
+        private const val JSON_FILE_NAME = "data.json"
     }
 
-    private val _state: MutableStateFlow<LazyListState> = MutableStateFlow(
-        LazyListState(
-            selectedItemId = savedStateHandle[SELECTED_DATA_ITEM_ID]
-        )
-    )
+    private val _state: MutableStateFlow<LazyListState> = MutableStateFlow(LazyListState())
     val state: StateFlow<LazyListState> = _state.asStateFlow()
 
     init {
-        loadData()
+        _state.update { state ->
+            state.copy(selectedItemId = savedStateHandle[SELECTED_DATA_ITEM_ID])
+        }
+        viewModelScope.launch {
+            loadData()
+        }
     }
 
     /**
      * Loads the initial set of data for the lazy list screen.
      */
     internal fun loadData() {
-        //loadJsonData() // Uncomment to use JSON data for LazyList instead.
-        loadMockData() // Uncomment to use mock data for LazyList instead.
+        loadJsonData() // Uncomment to use JSON data for LazyList instead.
+        //loadMockData() // Uncomment to use mock data for LazyList instead.
     }
 
     /**
      * Loads list data from JSON once deserialization support is implemented.
      */
     private fun loadJsonData() {
+        _state.update { state ->
+            state.copy(isLoading = true)
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
-            // TODO: Implement JSON deserializer logic here.
+            val dataList = JsonUtils.loadDataFromAsset(
+                context = getApplication(),
+                fileName = JSON_FILE_NAME
+            )
+            _state.update { state ->
+                state.copy(
+                    dataList = dataList,
+                    isLoading = false
+                )
+            }
         }
     }
 
@@ -52,9 +70,16 @@ class LazyListViewModel(
      * Loads mock data used by the lazy list screen.
      */
     private fun loadMockData() {
+        _state.update { state ->
+            state.copy(isLoading = true)
+        }
+
         val dataList = randomizeData(itemQuality = 10)
         _state.update { state ->
-            state.copy(dataList = dataList)
+            state.copy(
+                dataList = dataList,
+                isLoading = false
+            )
         }
     }
 

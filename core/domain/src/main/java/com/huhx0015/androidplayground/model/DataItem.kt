@@ -1,7 +1,9 @@
 package com.huhx0015.androidplayground.model
 
+import kotlinx.serialization.Serializable
 import kotlin.random.Random
 
+@Serializable
 data class DataItem(
   val id: Int = Random.nextInt(),
   val title: String = Random.nextLong().toHexString(),

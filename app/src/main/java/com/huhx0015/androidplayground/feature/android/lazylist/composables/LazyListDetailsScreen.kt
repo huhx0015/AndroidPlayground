@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.huhx0015.androidplayground.model.DataItem
+import kotlin.random.Random
 
 @Composable
 /**
@@ -22,7 +23,7 @@ internal fun LazyListDetailsScreen(
     modifier: Modifier = Modifier
 ) {
     LazyListRow(
-        dataItem = dataItem ?: DataItem(),
+        dataItem = dataItem ?: DataItem(id = Random.nextInt(), title = "", subtitle = ""),
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight(align = Alignment.Top)
@@ -34,5 +35,5 @@ internal fun LazyListDetailsScreen(
 @Preview
 @Composable
 private fun LazyListDetailsScreenPreview() {
-    LazyListDetailsScreen(dataItem = DataItem())
+    LazyListDetailsScreen(dataItem = DataItem(id = Random.nextInt(), title = "", subtitle = ""))
 }
