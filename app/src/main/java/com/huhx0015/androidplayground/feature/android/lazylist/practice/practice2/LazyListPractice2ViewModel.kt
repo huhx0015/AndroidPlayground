@@ -26,10 +26,6 @@ class LazyListPractice2ViewModel(
     )
     val state: StateFlow<LazyList2State> = _state.asStateFlow()
 
-    init {
-        loadData()
-    }
-
     companion object {
         const val KEY_SELECTED_ID = "selectedId"
     }

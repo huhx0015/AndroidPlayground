@@ -6,6 +6,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,7 +20,7 @@ fun LazyList2NavScreen(
     modifier: Modifier = Modifier
 ) {
     val viewModel: LazyListPractice2ViewModel = viewModel()
-    val state = viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsStateWithLifecycle()
     val navController = rememberNavController()
 
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
