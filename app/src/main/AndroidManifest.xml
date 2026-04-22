@@ -66,6 +66,18 @@
             android:name=".feature.kotlin.KotlinTopicActivity"
             android:exported="false"
             android:theme="@style/Theme.AndroidPlayground" />
+        <activity
+            android:name=".feature.android.transactionhistory.TransactionHistoryActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AndroidPlayground" />
+        <activity
+            android:name=".feature.android.paymentworkflow.PaymentWorkflowActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AndroidPlayground" />
+        <activity
+            android:name=".feature.android.offersdashboard.OffersDashboardActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AndroidPlayground" />
     </application>
 
 </manifest>

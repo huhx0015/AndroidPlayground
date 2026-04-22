@@ -2,6 +2,9 @@ package com.huhx0015.androidplayground.feature.entrance
 
 import com.huhx0015.androidplayground.core.architecture.BaseViewModel
 import com.huhx0015.androidplayground.feature.android.lazylist.LazyListActivity
+import com.huhx0015.androidplayground.feature.android.offersdashboard.OffersDashboardActivity
+import com.huhx0015.androidplayground.feature.android.paymentworkflow.PaymentWorkflowActivity
+import com.huhx0015.androidplayground.feature.android.transactionhistory.TransactionHistoryActivity
 import com.huhx0015.androidplayground.feature.android.recyclerview.RecyclerViewActivity
 import com.huhx0015.androidplayground.feature.kotlin.coroutine.CoroutineActivity
 import com.huhx0015.androidplayground.feature.kotlin.KotlinTopicActivity
@@ -32,6 +35,9 @@ class EntranceViewModel : BaseViewModel<EntranceState, EntranceIntent, EntranceE
           EntranceTopic.KotlinSample -> KotlinTopicActivity::class
           EntranceTopic.LazyList -> LazyListActivity::class
           EntranceTopic.RecyclerView -> RecyclerViewActivity::class
+          EntranceTopic.InterviewTransactions -> TransactionHistoryActivity::class
+          EntranceTopic.InterviewPaymentFlow -> PaymentWorkflowActivity::class
+          EntranceTopic.InterviewOffers -> OffersDashboardActivity::class
         }
         eventChannel.send(EntranceEvent.StartActivity(target))
       }

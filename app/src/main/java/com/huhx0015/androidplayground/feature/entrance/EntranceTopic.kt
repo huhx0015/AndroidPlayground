@@ -18,4 +18,16 @@ sealed class EntranceTopic {
   data object RecyclerView : EntranceTopic() {
     override val title: String = "RecyclerView"
   }
+
+  data object InterviewTransactions : EntranceTopic() {
+    override val title: String = "Transaction"
+  }
+
+  data object InterviewPaymentFlow : EntranceTopic() {
+    override val title: String = "Payment Flow"
+  }
+
+  data object InterviewOffers : EntranceTopic() {
+    override val title: String = "Offers Dashboard"
+  }
 }
