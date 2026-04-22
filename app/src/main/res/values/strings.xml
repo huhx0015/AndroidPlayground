@@ -6,5 +6,6 @@
     <string name="paging_data_adapter">PagingDataAdapter</string>
     <string name="recycler_view">RecyclerView</string>
     <string name="title_activity_compose">ComposeActivity</string>
+    <string name="title_activity_lazy_list_practice2">LazyListPractice2Activity</string>
 
 </resources>

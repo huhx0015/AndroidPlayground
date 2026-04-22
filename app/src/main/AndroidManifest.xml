@@ -11,7 +11,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidPlayground">
-
         <activity
             android:name=".feature.entrance.MainActivity"
             android:exported="true"
@@ -19,25 +18,24 @@
             android:theme="@style/Theme.AndroidPlayground">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.android.lazylist.LazyListActivity"
             android:exported="false" />
-
         <activity
             android:name=".feature.android.compose.ComposeActivity"
             android:exported="true"
             android:label="@string/title_activity_compose"
             android:theme="@style/Theme.AndroidPlayground">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity>
 
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
         <activity
             android:name=".feature.android.lazylist.practice.practice1.LazyListPractice1Activity"
             android:exported="true">
@@ -47,17 +45,24 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-
+        <activity
+            android:name=".feature.android.lazylist.practice.practice2.LazyListPractice2Activity"
+            android:exported="true"
+            android:label="@string/title_activity_lazy_list_practice2"
+            android:theme="@style/Theme.AndroidPlayground">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
         <activity
             android:name=".feature.android.recyclerview.RecyclerViewActivity"
             android:exported="false"
             android:theme="@style/Theme.AndroidPlayground" />
-
         <activity
             android:name=".feature.kotlin.coroutine.CoroutineActivity"
             android:exported="false"
             android:theme="@style/Theme.AndroidPlayground" />
-
         <activity
             android:name=".feature.kotlin.KotlinTopicActivity"
             android:exported="false"
