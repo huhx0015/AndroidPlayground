@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -35,6 +36,9 @@ import com.huhx0015.androidplayground.feature.android.compose.paymentworkflow.na
 import com.huhx0015.androidplayground.feature.android.compose.paymentworkflow.navigation.PaymentReviewRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Multi-step payment NavHost (form, review, result) with snackbars from [PaymentWorkflowViewModel.events].
+ */
 @Composable
 fun PaymentWorkflowNavigationScreen(
   onBackClick: () -> Unit,
@@ -101,6 +105,7 @@ fun PaymentWorkflowNavigationScreen(
   }
 }
 
+/** Amount and recipient fields with validation and Continue when [PaymentWorkflowState.isFormValid]. */
 @Composable
 private fun PaymentFormScreen(
   state: PaymentWorkflowState,
@@ -141,6 +146,7 @@ private fun PaymentFormScreen(
   }
 }
 
+/** Read-only summary of amount and recipient with a submit action. */
 @Composable
 private fun PaymentReviewScreen(
   amount: String,
@@ -163,6 +169,7 @@ private fun PaymentReviewScreen(
   }
 }
 
+/** Success or failure headline with Done returning to the activity caller. */
 @Composable
 private fun PaymentResultScreen(
   success: Boolean,
@@ -180,4 +187,44 @@ private fun PaymentResultScreen(
       Text("Done")
     }
   }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun PaymentWorkflowNavigationScreenPreview() {
+  PaymentWorkflowNavigationScreen(onBackClick = {})
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun PaymentFormScreenPreview() {
+  PaymentFormScreen(
+    state = PaymentWorkflowState(
+      amount = "42.50",
+      recipient = "Jane Doe",
+    ),
+    onAmountChanged = {},
+    onRecipientChanged = {},
+    onContinueClick = {},
+  )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun PaymentReviewScreenPreview() {
+  PaymentReviewScreen(
+    amount = "42.50",
+    recipient = "Jane Doe",
+    onSubmitClick = {},
+  )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun PaymentResultScreenPreview() {
+  PaymentResultScreen(success = true, onDoneClick = {})
 }

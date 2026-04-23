@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -32,19 +33,24 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OfferCategory
-import com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OffersDashboardState
-import com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OffersDashboardViewModel
+import com.huhx0015.androidplayground.feature.android.offersdashboard.OfferCategory
+import com.huhx0015.androidplayground.feature.android.offersdashboard.OfferItem
+import com.huhx0015.androidplayground.feature.android.offersdashboard.OffersDashboardState
 import com.huhx0015.androidplayground.feature.android.compose.offersdashboard.navigation.OfferDetailsRoute
 import com.huhx0015.androidplayground.feature.android.compose.offersdashboard.navigation.OffersDashboardRoute
+import com.huhx0015.androidplayground.feature.android.offersdashboard.OffersDashboardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Root navigation for offers: list with category chips, snackbars from [OffersDashboardViewModel.events],
+ * and a simple offer detail route.
+ */
 @Composable
 fun OffersDashboardNavigationScreen(
   onBackClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val viewModel: com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OffersDashboardViewModel = viewModel()
+  val viewModel: OffersDashboardViewModel = viewModel()
   val navController = rememberNavController()
   val state by viewModel.state.collectAsStateWithLifecycle()
   val snackbarHostState = remember { SnackbarHostState() }
@@ -96,6 +102,7 @@ fun OffersDashboardNavigationScreen(
   }
 }
 
+/** Renders category filters, loading/error/empty states, and the scrollable visible offers list. */
 @Composable
 private fun OffersScreen(
   state: OffersDashboardState,
@@ -141,4 +148,31 @@ private fun OffersScreen(
       }
     }
   }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun OffersDashboardNavigationScreenPreview() {
+  OffersDashboardNavigationScreen(onBackClick = {})
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun OffersScreenPreview() {
+  OffersScreen(
+    state = OffersDashboardState(
+      isLoading = false,
+      selectedCategory = OfferCategory.ALL,
+      offers = emptyList(),
+      visibleOffers = listOf(
+        OfferItem("offer-1", "5% cashback on groceries", OfferCategory.CASHBACK),
+        OfferItem("offer-2", "Airport lounge pass", OfferCategory.TRAVEL),
+      ),
+    ),
+    onCategorySelected = {},
+    onRetry = {},
+    onOfferClick = {},
+  )
 }

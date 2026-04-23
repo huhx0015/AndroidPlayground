@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.android.compose.offersdashboard
+package com.huhx0015.androidplayground.feature.android.offersdashboard
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -10,6 +10,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+/**
+ * Holds offers list UI state and drives category filtering.
+ *
+ * [state] is screen data that should persist and be replayed to collectors; one-off UI
+ * signals (e.g. snackbars) use [events] instead.
+ */
 class OffersDashboardViewModel(
   private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -19,14 +25,21 @@ class OffersDashboardViewModel(
   }
 
   private val _state = MutableStateFlow(
-    _root_ide_package_.com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OffersDashboardState(
-      selectedCategory = _root_ide_package_.com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OfferCategory.valueOf(
+    OffersDashboardState(
+      selectedCategory = OfferCategory.valueOf(
         savedStateHandle[CATEGORY_KEY]
-          ?: _root_ide_package_.com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OfferCategory.ALL.name,
+          ?: OfferCategory.ALL.name,
       ),
     ),
   )
-  val state: StateFlow<com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OffersDashboardState> = _state.asStateFlow()
+  val state: StateFlow<OffersDashboardState> = _state.asStateFlow()
+
+  /*
+   * Ephemeral UI signals (e.g. snackbars): SharedFlow does not replay the last value to
+   * new collectors the way StateFlow does, so past messages are not re-shown when the
+   * screen becomes visible again. MutableSharedFlow is used internally to emit; [events]
+   * exposes a read-only SharedFlow so only the ViewModel can emit.
+   */
   private val _events = MutableSharedFlow<String>(extraBufferCapacity = 1)
   val events: SharedFlow<String> = _events.asSharedFlow()
 
@@ -34,9 +47,10 @@ class OffersDashboardViewModel(
     loadOffers()
   }
 
+  /** Loads fake offers from the repository, updates loading state, reapplies the category filter, and emits a refresh snackbar. */
   fun loadOffers() {
     _state.update { it.copy(isLoading = true, errorMessage = null) }
-    val allOffers = _root_ide_package_.com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OffersFakeRepository.getOffers()
+    val allOffers = OffersFakeRepository.getOffers()
     _state.update {
       it.copy(
         isLoading = false,
@@ -47,20 +61,23 @@ class OffersDashboardViewModel(
     _events.tryEmit("Offers refreshed")
   }
 
-  fun onCategorySelected(category: com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OfferCategory) {
+  /** Persists the category, updates state, and recomputes [OffersDashboardState.visibleOffers]. */
+  fun onCategorySelected(category: OfferCategory) {
     savedStateHandle[CATEGORY_KEY] = category.name
     _state.update { it.copy(selectedCategory = category) }
     applyCategoryFilter()
   }
 
-  fun getOfferById(id: String): com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OfferItem? {
+  /** Returns the offer with the given id from the full loaded list, or null if not found. */
+  fun getOfferById(id: String): OfferItem? {
     return _state.value.offers.firstOrNull { it.id == id }
   }
 
+  /** Filters [OffersDashboardState.offers] by [OffersDashboardState.selectedCategory] into [OffersDashboardState.visibleOffers]. */
   private fun applyCategoryFilter() {
     _state.update { current ->
       val visible = current.offers.filter { offer ->
-        current.selectedCategory == _root_ide_package_.com.huhx0015.androidplayground.feature.android.compose.offersdashboard.OfferCategory.ALL || offer.category == current.selectedCategory
+        current.selectedCategory == OfferCategory.ALL || offer.category == current.selectedCategory
       }
       current.copy(visibleOffers = visible)
     }

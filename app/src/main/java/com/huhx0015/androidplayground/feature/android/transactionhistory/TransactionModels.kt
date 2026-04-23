@@ -15,6 +15,7 @@ data class TransactionItem(
 )
 
 internal object TransactionFakeRepository {
+  /** Returns a static in-memory list of sample transactions for the history screen. */
   fun getTransactions(): List<TransactionItem> {
     return listOf(
       TransactionItem("tx-1", "Coffee shop", "-$6.50", TransactionType.FOOD),

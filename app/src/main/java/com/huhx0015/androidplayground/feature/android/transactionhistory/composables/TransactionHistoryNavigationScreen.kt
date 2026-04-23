@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -34,11 +35,15 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.TransactionHistoryState
 import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.TransactionHistoryViewModel
+import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.TransactionItem
 import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.TransactionType
 import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.navigation.TransactionDetailsRoute
 import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.navigation.TransactionHistoryRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
+/**
+ * Transaction list and detail navigation graph with search and type chips; collects [TransactionHistoryViewModel.events] for snackbars.
+ */
 @Composable
 fun TransactionHistoryNavigationScreen(
   onBackClick: () -> Unit,
@@ -93,6 +98,7 @@ fun TransactionHistoryNavigationScreen(
   }
 }
 
+/** Search field, type filter chips, and a lazy list of filtered transactions with navigation to detail. */
 @Composable
 private fun TransactionListScreen(
   state: TransactionHistoryState,
@@ -146,6 +152,7 @@ private fun TransactionListScreen(
   }
 }
 
+/** Simple detail placeholder showing the resolved transaction title. */
 @Composable
 private fun TransactionDetailsScreen(itemTitle: String, modifier: Modifier = Modifier) {
   Column(
@@ -156,4 +163,40 @@ private fun TransactionDetailsScreen(itemTitle: String, modifier: Modifier = Mod
     Text(text = "Transaction Details")
     Text(text = itemTitle)
   }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun TransactionHistoryNavigationScreenPreview() {
+  TransactionHistoryNavigationScreen(onBackClick = {})
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun TransactionListScreenPreview() {
+  val sample = listOf(
+    TransactionItem("tx-1", "Coffee shop", "-$6.50", TransactionType.FOOD),
+    TransactionItem("tx-2", "Online store", "-$42.00", TransactionType.SHOPPING),
+  )
+  TransactionListScreen(
+    state = TransactionHistoryState(
+      isLoading = false,
+      query = "coffee",
+      selectedType = TransactionType.ALL,
+      transactions = sample,
+      filteredTransactions = sample,
+    ),
+    onQueryChanged = {},
+    onFilterSelected = {},
+    onItemClick = {},
+  )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
+@Composable
+private fun TransactionDetailsScreenPreview() {
+  TransactionDetailsScreen(itemTitle = "Coffee shop")
 }
