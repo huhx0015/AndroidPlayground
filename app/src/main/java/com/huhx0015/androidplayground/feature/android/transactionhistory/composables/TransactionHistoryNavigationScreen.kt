@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.android.compose.transactionhistory.composables
+package com.huhx0015.androidplayground.feature.android.transactionhistory.composables
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
@@ -33,12 +34,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.TransactionHistoryState
+import com.huhx0015.androidplayground.feature.android.transactionhistory.TransactionHistoryState
 import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.TransactionHistoryViewModel
-import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.TransactionItem
-import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.TransactionType
-import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.navigation.TransactionDetailsRoute
-import com.huhx0015.androidplayground.feature.android.compose.transactionhistory.navigation.TransactionHistoryRoute
+import com.huhx0015.androidplayground.feature.android.transactionhistory.TransactionItem
+import com.huhx0015.androidplayground.feature.android.transactionhistory.TransactionType
+import com.huhx0015.androidplayground.feature.android.transactionhistory.navigation.TransactionDetailsRoute
+import com.huhx0015.androidplayground.feature.android.transactionhistory.navigation.TransactionHistoryRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 /**
@@ -55,7 +56,7 @@ fun TransactionHistoryNavigationScreen(
   val lifecycleOwner = LocalLifecycleOwner.current
 
   LaunchedEffect(viewModel, lifecycleOwner) {
-    lifecycleOwner.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
       viewModel.events.collect { message ->
         snackbarHostState.showSnackbar(message)
       }

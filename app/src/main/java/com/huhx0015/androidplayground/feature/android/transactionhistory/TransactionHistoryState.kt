@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.android.compose.transactionhistory
+package com.huhx0015.androidplayground.feature.android.transactionhistory
 
 data class TransactionHistoryState(
   val isLoading: Boolean = true,

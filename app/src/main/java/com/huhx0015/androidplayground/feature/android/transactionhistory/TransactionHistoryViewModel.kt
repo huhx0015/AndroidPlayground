@@ -3,6 +3,10 @@ package com.huhx0015.androidplayground.feature.android.compose.transactionhistor
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.huhx0015.androidplayground.feature.android.transactionhistory.TransactionFakeRepository
+import com.huhx0015.androidplayground.feature.android.transactionhistory.TransactionHistoryState
+import com.huhx0015.androidplayground.feature.android.transactionhistory.TransactionItem
+import com.huhx0015.androidplayground.feature.android.transactionhistory.TransactionType
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -30,12 +34,12 @@ class TransactionHistoryViewModel(
   }
 
   private val _state = MutableStateFlow(
-    TransactionHistoryState(
-      query = savedStateHandle[SEARCH_QUERY_KEY] ?: "",
-      selectedType = TransactionType.valueOf(
-        savedStateHandle[SELECTED_FILTER_KEY] ?: TransactionType.ALL.name,
+      TransactionHistoryState(
+          query = savedStateHandle[SEARCH_QUERY_KEY] ?: "",
+          selectedType = TransactionType.valueOf(
+              savedStateHandle[SELECTED_FILTER_KEY] ?: TransactionType.ALL.name,
+          ),
       ),
-    ),
   )
   val state: StateFlow<TransactionHistoryState> = _state.asStateFlow()
 

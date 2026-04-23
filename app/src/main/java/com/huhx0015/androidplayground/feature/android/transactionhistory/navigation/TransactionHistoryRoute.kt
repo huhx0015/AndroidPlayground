@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.android.compose.transactionhistory.navigation
+package com.huhx0015.androidplayground.feature.android.transactionhistory.navigation
 
 import kotlinx.serialization.Serializable
 

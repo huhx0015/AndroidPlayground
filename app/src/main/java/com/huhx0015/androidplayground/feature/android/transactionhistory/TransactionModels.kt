@@ -1,4 +1,4 @@
-package com.huhx0015.androidplayground.feature.android.compose.transactionhistory
+package com.huhx0015.androidplayground.feature.android.transactionhistory
 
 enum class TransactionType {
   ALL,
