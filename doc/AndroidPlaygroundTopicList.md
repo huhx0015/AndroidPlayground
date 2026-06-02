@@ -66,3 +66,9 @@ This document tracks topics covered in AndroidPlayground, with a brief summary a
 
 * **Fragment: Backstack**  
   Summary: Add a fragment navigation example demonstrating add/replace transactions and back stack behavior.
+
+## PRACTICE / KATAS
+
+* **Functional-test practice pack (Kotlin Flows, structured concurrency, debugging)**  
+  Summary: Pure-Kotlin coding katas (no UI) modeled on a live-coding functional round — skeleton functions with provided JUnit tests for the implementation half, plus buggy-function-with-failing-test debugging exercises. Reference solutions included. Not a screen.  
+  Where: `app/src/main/java/com/huhx0015/androidplayground/practice/` (+ mirrored tests in `app/src/test/...`); see `practice/README.md`.

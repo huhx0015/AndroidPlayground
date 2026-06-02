@@ -36,7 +36,7 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".feature.android.lazylist.practice.practice1.LazyListPractice1Activity"
+            android:name=".practice.android.lazylist.practice1.LazyListPractice1Activity"
             android:exported="true">
 
             <!-- <intent-filter> -->
@@ -45,7 +45,7 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".feature.android.lazylist.practice.practice2.LazyListPractice2Activity"
+            android:name=".practice.android.lazylist.practice2.LazyListPractice2Activity"
             android:exported="true"
             android:label="@string/title_activity_lazy_list_practice2"
             android:theme="@style/Theme.AndroidPlayground">
