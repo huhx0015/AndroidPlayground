@@ -8,6 +8,7 @@ import com.huhx0015.androidplayground.feature.android.transactionhistory.Transac
 import com.huhx0015.androidplayground.feature.android.recyclerview.RecyclerViewActivity
 import com.huhx0015.androidplayground.feature.kotlin.coroutine.CoroutineActivity
 import com.huhx0015.androidplayground.feature.kotlin.KotlinTopicActivity
+import com.huhx0015.androidplayground.practice.runner.FunctionalTestPracticeActivity
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +34,7 @@ class EntranceViewModel : BaseViewModel<EntranceState, EntranceIntent, EntranceE
         val target = when (intent.topic) {
           EntranceTopic.Coroutines -> CoroutineActivity::class
           EntranceTopic.KotlinSample -> KotlinTopicActivity::class
+          EntranceTopic.FunctionalTestPractice -> FunctionalTestPracticeActivity::class
           EntranceTopic.LazyList -> LazyListActivity::class
           EntranceTopic.RecyclerView -> RecyclerViewActivity::class
           EntranceTopic.InterviewTransactions -> TransactionHistoryActivity::class

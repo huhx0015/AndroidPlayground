@@ -11,5 +11,8 @@ data class EntranceState(
     EntranceTopic.InterviewPaymentFlow,
     EntranceTopic.InterviewOffers,
   ),
-  val kotlinTopics: List<EntranceTopic> = listOf(EntranceTopic.Coroutines),
+  val kotlinTopics: List<EntranceTopic> = listOf(
+    EntranceTopic.Coroutines,
+    EntranceTopic.FunctionalTestPractice,
+  ),
 ) : BaseState

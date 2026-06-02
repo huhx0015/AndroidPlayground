@@ -11,6 +11,10 @@ sealed class EntranceTopic {
     override val title = "Kotlin sample"
   }
 
+  data object FunctionalTestPractice : EntranceTopic() {
+    override val title = "Functional Test Practice"
+  }
+
   data object LazyList : EntranceTopic() {
     override val title = "LazyList"
   }
