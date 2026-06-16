@@ -40,6 +40,7 @@ dependencies {
   implementation(project(":core:architecture"))
   implementation(project(":core:data"))
   implementation(project(":core:domain"))
+  implementation(project(":practice"))
 
   implementation(libs.kotlinx.serialization.json)
   implementation(libs.androidx.core.ktx)

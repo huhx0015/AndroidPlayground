@@ -2,28 +2,39 @@ package com.huhx0015.androidplayground.practice.runner
 
 import com.huhx0015.androidplayground.practice.debugging.BuggyAggregator
 import com.huhx0015.androidplayground.practice.debugging.BuggyDataLoader
+import com.huhx0015.androidplayground.practice.debugging.BuggyEventBuffer
+import com.huhx0015.androidplayground.practice.debugging.BuggyItemStore
 import com.huhx0015.androidplayground.practice.debugging.BuggyPriceCalculator
+import com.huhx0015.androidplayground.practice.debugging.BuggyTemperatureFeed
 import com.huhx0015.androidplayground.practice.debugging.solutions.AggregatorFixed
 import com.huhx0015.androidplayground.practice.debugging.solutions.DataLoaderFixed
+import com.huhx0015.androidplayground.practice.debugging.solutions.EventBufferFixed
+import com.huhx0015.androidplayground.practice.debugging.solutions.ItemStoreFixed
 import com.huhx0015.androidplayground.practice.debugging.solutions.PriceCalculatorFixed
+import com.huhx0015.androidplayground.practice.debugging.solutions.TemperatureFeedFixed
+import com.huhx0015.androidplayground.practice.implementation.asResult
 import com.huhx0015.androidplayground.practice.implementation.cacheThenNetwork
 import com.huhx0015.androidplayground.practice.implementation.chunked
 import com.huhx0015.androidplayground.practice.implementation.computeTotal
 import com.huhx0015.androidplayground.practice.implementation.mapParallel
 import com.huhx0015.androidplayground.practice.implementation.raceFirstSuccessful
 import com.huhx0015.androidplayground.practice.implementation.retryWithBackoff
+import com.huhx0015.androidplayground.practice.implementation.searchTypeahead
 import com.huhx0015.androidplayground.practice.implementation.throttleFirst
 import com.huhx0015.androidplayground.practice.implementation.withTimeoutOrFallback
+import com.huhx0015.androidplayground.practice.implementation.solutions.asResultSolution
 import com.huhx0015.androidplayground.practice.implementation.solutions.cacheThenNetworkSolution
 import com.huhx0015.androidplayground.practice.implementation.solutions.chunkedSolution
 import com.huhx0015.androidplayground.practice.implementation.solutions.computeTotalSolution
 import com.huhx0015.androidplayground.practice.implementation.solutions.mapParallelSolution
 import com.huhx0015.androidplayground.practice.implementation.solutions.raceFirstSuccessfulSolution
 import com.huhx0015.androidplayground.practice.implementation.solutions.retryWithBackoffSolution
+import com.huhx0015.androidplayground.practice.implementation.solutions.searchTypeaheadSolution
 import com.huhx0015.androidplayground.practice.implementation.solutions.throttleFirstSolution
 import com.huhx0015.androidplayground.practice.implementation.solutions.withTimeoutOrFallbackSolution
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -76,6 +87,35 @@ private suspend fun runCancellationScenario(
     job.join()
   }
   return returned
+}
+
+/** Expected snapshot progression for the D5 StateFlow exercise (initial empty + one per add). */
+private val EXPECTED_SNAPSHOTS = listOf(
+  emptyList<String>(),
+  listOf("a"),
+  listOf("a", "b"),
+  listOf("a", "b", "c"),
+)
+
+/**
+ * Drives the D5 StateFlow scenario in real time: collect [state] in a child coroutine while adding
+ * "a", "b", "c" via [add], then return every snapshot the collector observed. A correct store emits a
+ * fresh list per add; the buggy one reuses a mutable list, so the collector sees only one change.
+ */
+private suspend fun collectSnapshots(
+  state: StateFlow<List<String>>,
+  add: (String) -> Unit,
+): List<List<String>> {
+  val observed = mutableListOf<List<String>>()
+  coroutineScope {
+    val job = launch { state.collect { observed.add(it) } }
+    delay(20); add("a")
+    delay(20); add("b")
+    delay(20); add("c")
+    delay(20)
+    job.cancel()
+  }
+  return observed
 }
 
 /**
@@ -331,6 +371,108 @@ object ExerciseCatalog {
         val result = PriceCalculatorFixed().totals(quantity, price).toList()
         verifyEquals(listOf(20.0, 30.0, 60.0), result)
         "totals re-emitted $result on every change"
+      },
+    ),
+    PracticeExercise(
+      id = "as-result",
+      number = "09",
+      title = "Flow.asResult",
+      category = ExerciseCategory.IMPLEMENTATION,
+      concept = "Materialize values + terminal failure into Result; never throw to the collector.",
+      sourceHint = "implementation/AsResult.kt",
+      runSkeleton = {
+        val results = flow { emit(1); emit(2); throw IllegalStateException("boom") }
+          .asResult().toList()
+        verifyEquals(3, results.size)
+        verifyEquals(1, results[0].getOrNull())
+        verifyEquals(true, results[2].isFailure)
+        "asResult emitted ${results.size} Results, last = ${results[2]}"
+      },
+      runSolution = {
+        val results = flow { emit(1); emit(2); throw IllegalStateException("boom") }
+          .asResultSolution().toList()
+        verifyEquals(3, results.size)
+        verifyEquals(1, results[0].getOrNull())
+        verifyEquals(true, results[2].isFailure)
+        "asResult emitted ${results.size} Results, last = ${results[2]}"
+      },
+    ),
+    PracticeExercise(
+      id = "search-typeahead",
+      number = "10",
+      title = "Flow.searchTypeahead",
+      category = ExerciseCategory.IMPLEMENTATION,
+      concept = "debounce + flatMapLatest: collapse rapid input, cancel the stale request.",
+      sourceHint = "implementation/SearchTypeahead.kt",
+      runSkeleton = {
+        val queries = flow { emit("a"); delay(10); emit("ab"); delay(10); emit("abc") }
+        val results = queries.searchTypeahead(debounceMs = 50) { "result:$it" }.toList()
+        verifyEquals(listOf("result:abc"), results)
+        "Debounced rapid typing to a single search -> $results"
+      },
+      runSolution = {
+        val queries = flow { emit("a"); delay(10); emit("ab"); delay(10); emit("abc") }
+        val results = queries.searchTypeaheadSolution(debounceMs = 50) { "result:$it" }.toList()
+        verifyEquals(listOf("result:abc"), results)
+        "Debounced rapid typing to a single search -> $results"
+      },
+    ),
+    PracticeExercise(
+      id = "debug-conflate",
+      number = "D4",
+      title = "conflate drops events",
+      category = ExerciseCategory.DEBUGGING,
+      concept = "conflate keeps only the latest; back-pressure (remove it / use buffer) to keep all.",
+      sourceHint = "debugging/BuggyEventBuffer.kt",
+      runSkeleton = {
+        val events = flow { for (i in 1..5) { emit(i); delay(10) } }
+        val processed = BuggyEventBuffer().processEvents(events).toList()
+        verifyEquals(listOf(1, 2, 3, 4, 5), processed)
+        "Processed every event in order -> $processed"
+      },
+      runSolution = {
+        val events = flow { for (i in 1..5) { emit(i); delay(10) } }
+        val processed = EventBufferFixed().processEvents(events).toList()
+        verifyEquals(listOf(1, 2, 3, 4, 5), processed)
+        "Processed every event in order -> $processed"
+      },
+    ),
+    PracticeExercise(
+      id = "debug-stateflow-snapshot",
+      number = "D5",
+      title = "StateFlow emits once",
+      category = ExerciseCategory.DEBUGGING,
+      concept = "Reusing a mutable list as the StateFlow value blocks emissions; publish a snapshot.",
+      sourceHint = "debugging/BuggyItemStore.kt",
+      runSkeleton = {
+        val store = BuggyItemStore()
+        val observed = collectSnapshots(store.state) { store.add(it) }
+        verifyEquals(EXPECTED_SNAPSHOTS, observed)
+        "StateFlow emitted a fresh snapshot per add -> $observed"
+      },
+      runSolution = {
+        val store = ItemStoreFixed()
+        val observed = collectSnapshots(store.state) { store.add(it) }
+        verifyEquals(EXPECTED_SNAPSHOTS, observed)
+        "StateFlow emitted a fresh snapshot per add -> $observed"
+      },
+    ),
+    PracticeExercise(
+      id = "debug-flow-context",
+      number = "D6",
+      title = "Flow invariant violated",
+      category = ExerciseCategory.DEBUGGING,
+      concept = "Don't emit inside withContext; use flowOn to move the producer's dispatcher.",
+      sourceHint = "debugging/BuggyTemperatureFeed.kt",
+      runSkeleton = {
+        val result = BuggyTemperatureFeed().readings().toList()
+        verifyEquals(listOf(18, 20, 22), result)
+        "Read all temperatures off the main dispatcher -> $result"
+      },
+      runSolution = {
+        val result = TemperatureFeedFixed().readings().toList()
+        verifyEquals(listOf(18, 20, 22), result)
+        "Read all temperatures off the main dispatcher -> $result"
       },
     ),
   )

@@ -1,54 +1,65 @@
 package com.huhx0015.androidplayground.practice.implementation
 
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Ignore
 import org.junit.Test
 
+/**
+ * Tests for EXERCISE 02 ([retryWithBackoff]). Remove @Ignore to start.
+ *
+ * Timing is asserted with runTest's virtual clock: `delay(n)` advances `currentTime` without any
+ * real waiting, so backoff growth is fully deterministic.
+ */
+@Ignore("Remove this annotation to begin Exercise 02")
+@OptIn(ExperimentalCoroutinesApi::class)
 class RetryWithBackoffTest {
 
   @Test
-  fun `retries until success and applies exponential backoff`() = runTest {
+  fun succeedsOnFirstAttempt_doesNotDelay() = runTest {
     var attempts = 0
-    val upstream = flow {
+
+    val result = retryWithBackoff(maxAttempts = 3, initialDelayMs = 100, factor = 2.0) {
       attempts++
-      if (attempts < 3) throw RuntimeException("boom #$attempts")
-      emit("ok")
+      "value"
     }
 
-    val value = upstream
-      .retryWithBackoff(maxAttempts = 3, initialDelayMillis = 100, factor = 2.0)
-      .first()
-
-    assertEquals("ok", value)
-    assertEquals(3, attempts)
-    // Backoff before retry 0 = 100ms, before retry 1 = 200ms -> 300ms of virtual time.
-    assertEquals(300, testScheduler.currentTime)
+    assertEquals("value", result)
+    assertEquals(1, attempts)
+    assertEquals(0L, testScheduler.currentTime)
   }
 
   @Test
-  fun `rethrows the last error after attempts are exhausted`() = runTest {
+  fun retriesThenSucceeds_withExponentiallyGrowingDelays() = runTest {
     var attempts = 0
-    val upstream = flow<String> {
+
+    val result = retryWithBackoff(maxAttempts = 4, initialDelayMs = 100, factor = 2.0) {
       attempts++
-      throw IllegalStateException("always fails #$attempts")
+      if (attempts < 4) error("transient failure $attempts") else "ok"
     }
 
+    assertEquals("ok", result)
+    assertEquals(4, attempts)
+    // Delays before attempts 2, 3, 4 = 100 + 200 + 400 = 700.
+    assertEquals(700L, testScheduler.currentTime)
+  }
+
+  @Test
+  fun exhaustsAttemptsThenRethrowsLastError() = runTest {
+    var attempts = 0
     var caught: Throwable? = null
+
     try {
-      upstream
-        .retryWithBackoff(maxAttempts = 2, initialDelayMillis = 100, factor = 2.0)
-        .first()
-    } catch (e: IllegalStateException) {
-      caught = e
+      retryWithBackoff(maxAttempts = 3, initialDelayMs = 50, factor = 2.0) {
+        attempts++
+        throw IllegalStateException("attempt $attempts failed")
+      }
+    } catch (error: IllegalStateException) {
+      caught = error
     }
 
-    assertEquals(2, attempts) // 1 initial attempt + 1 retry
-    assertTrue("expected the last failure to propagate", caught is IllegalStateException)
-    assertTrue(caught!!.message!!.startsWith("always fails"))
-    // One backoff of 100ms happened before the single retry.
-    assertEquals(100, testScheduler.currentTime)
+    assertEquals(3, attempts)
+    assertEquals("attempt 3 failed", caught?.message)
   }
 }

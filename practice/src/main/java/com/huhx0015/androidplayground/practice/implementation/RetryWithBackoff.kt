@@ -1,34 +1,30 @@
 package com.huhx0015.androidplayground.practice.implementation
 
-import kotlinx.coroutines.flow.Flow
-
 /**
- * EXERCISE 2 — Custom Flow operator: retryWithBackoff.
+ * EXERCISE 02 — Retry with exponential backoff.
  *
- * Implement a retry operator with exponential backoff.
+ * Implement [retryWithBackoff] so that it invokes [block], and on failure retries it up to a total
+ * of [maxAttempts] times, waiting longer between each attempt.
  *
- * Behaviour contract:
- *  - [maxAttempts] is the TOTAL number of attempts, including the initial one
- *    (so the number of retries is maxAttempts - 1). Must be >= 1.
- *  - When the upstream flow throws, wait, then re-subscribe and try again.
- *  - The delay before retry number `r` (0-based) is:
- *        initialDelayMillis * (factor ^ r)
- *    i.e. first retry waits initialDelayMillis, second waits initialDelayMillis * factor, etc.
- *  - After all attempts are exhausted, the LAST exception must be rethrown to the collector.
- *  - A successful emission must pass through unchanged.
- *  - Use the coroutine-aware delay so virtual time works under `runTest`.
+ * Contract:
+ *  - Run [block]; if it returns, return that value immediately.
+ *  - On failure, wait [initialDelayMs], then retry. Multiply the delay by [factor] before each
+ *    subsequent wait (e.g. 100, 200, 400 ... for factor = 2.0).
+ *  - Make at most [maxAttempts] total attempts. Do NOT delay after the final attempt.
+ *  - If every attempt fails, rethrow the exception from the LAST attempt.
+ *  - A CancellationException must never be retried — let it propagate.
+ *  - [maxAttempts] must be >= 1.
  *
- * Hint: `kotlinx.coroutines.flow.retryWhen { cause, attempt -> ... }` gives you a 0-based
- *       `attempt` index and lets you `delay(...)` before returning `true` to retry.
+ * Hints: a retry loop, try/catch, kotlinx.coroutines.delay. Catch CancellationException separately
+ * and rethrow it before catching broader Throwable.
  *
- * @param maxAttempts total attempts including the first (>= 1)
- * @param initialDelayMillis base backoff delay in millis
- * @param factor multiplier applied per retry (e.g. 2.0 for doubling)
+ * The provided test class is [RetryWithBackoffTest] (currently @Ignore'd — remove to start).
  */
-fun <T> Flow<T>.retryWithBackoff(
+suspend fun <T> retryWithBackoff(
   maxAttempts: Int,
-  initialDelayMillis: Long,
-  factor: Double = 2.0,
-): Flow<T> {
+  initialDelayMs: Long,
+  factor: Double,
+  block: suspend () -> T,
+): T {
   TODO("Implement retryWithBackoff — see the KDoc contract above")
 }

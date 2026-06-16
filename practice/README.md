@@ -1,105 +1,101 @@
-# Kotlin Flows / Coroutines Interview Practice
+# Functional-Test Practice Pack (`:practice`)
 
-A self-contained, pure-JVM module that mirrors a **1h10m Functional Test** interview:
+Pure-Kotlin coding katas (no Android UI) for practicing a **live-coding functional round**. The round
+has two parts, and this pack mirrors both:
 
-1. **Implementation challenge** — implement a function from its contract; provided unit tests verify it.
-2. **Debugging challenge** — a function whose test is failing; fix the bug **without editing the test**.
+1. **Implementation challenge** — you're given an interface/function description and provided unit
+   tests; write the concrete implementation until the tests pass. Drills **Kotlin Flows, structured
+   concurrency, async programming, and error handling in concurrent/reactive code**.
+2. **Debugging challenge** — a function whose test is failing; find and fix the bug **without
+   modifying the test**. Drills **debugging and analytical problem-solving**.
 
-Everything here runs as plain JUnit + `kotlinx-coroutines-test` — no Android, no emulator.
+Everything here is plain Kotlin running on `kotlinx-coroutines-test`'s virtual clock — `delay(n)`
+advances time instantly, so timing-sensitive tests are deterministic with no real waiting. This is a
+pure-JVM Gradle module (`kotlin.jvm`), so the test loop is fast and Android-free.
 
----
-
-## Layout
+## How it's organized
 
 ```
-practice/
-├── src/main/java/com/huhx0015/androidplayground/practice/
-│   ├── implementation/     ← Part 1: stubs to implement (TODO)
-│   │   ├── FlowOperators.kt        throttleFirst
-│   │   ├── RetryWithBackoff.kt     retryWithBackoff
-│   │   ├── ParallelMap.kt          parallelMap
-│   │   ├── FirstSuccessful.kt      firstSuccessful
-│   │   └── ResultFlow.kt           asResult
-│   └── debugging/          ← Part 2: bugs to fix
-│       ├── StateHolder.kt          StateFlow not emitting
-│       ├── ParallelAggregator.kt   swallowed failure / no fail-fast
-│       └── EventBuffer.kt          dropped emissions
-├── src/test/java/...                ← the verifying tests (Part 2 tests are LOCKED)
-└── SOLUTIONS.md                     ← answer key — open ONLY after attempting
+practice/src/main/.../practice/
+  implementation/                 ← 10 exercises: <Name>.kt with a TODO() skeleton + KDoc contract
+    solutions/                    ← reference implementations (<Name>Solution)
+  debugging/                      ← 6 exercises: Buggy<Name>.kt with a planted bug
+    solutions/                    ← fixed versions (<Name>Fixed) + a comment explaining the root cause
+practice/src/test/.../practice/   ← tests, mirroring the same structure
 ```
 
----
-
-## How to use it (rehearse like the real thing)
-
-**Suggested split for a 70-minute timer**
-
-| Block            | Time   | What                                                        |
-|------------------|--------|------------------------------------------------------------|
-| Part 1           | ~35 min| Pick 2–3 implementation exercises; make their tests green.  |
-| Part 2           | ~20 min| Fix the failing debugging tests without touching them.     |
-| Review           | ~15 min| Re-read your code, narrate trade-offs, check against `SOLUTIONS.md`. |
-
-**Workflow per exercise**
-
-1. Read the KDoc contract in the source file.
-2. Implement / fix — talk through your reasoning out loud (the rubric rewards communication).
-3. Run the test (commands below). Iterate until green.
-4. Only then open `SOLUTIONS.md` to compare approaches.
-
-> Commit as you go (`git add -p && git commit`) — the real interview requires all changes committed.
-
----
+- **Skeleton / buggy tests are `@Ignore`'d by default** so the suite stays green until you choose an
+  exercise. To work one: open its test class, **remove the `@Ignore(...)` annotation**, run it, watch
+  it fail, then edit the corresponding `implementation/` or `debugging/` source file until it passes.
+- **Solution tests are always active.** They prove every reference answer is correct and double as a
+  worked example if you get stuck — peek only after attempting.
 
 ## Running the tests
 
-Run everything:
 ```bash
+# All practice tests (solution/fixed tests pass; @Ignore'd skeletons are skipped)
 ./gradlew :practice:test
+
+# A single exercise's tests
+./gradlew :practice:test --tests "*MapParallelTest"
+./gradlew :practice:test --tests "*BuggyItemStoreTest"
 ```
 
-Run one challenge (by test class name, wildcard ok):
-```bash
-./gradlew :practice:test --tests "*ThrottleFirstTest"
-./gradlew :practice:test --tests "*ParallelMapTest"
-./gradlew :practice:test --tests "*StateHolderTest"
-```
+HTML report after a run: `practice/build/reports/tests/test/index.html`.
 
-See the HTML report after a run:
-```
-practice/build/reports/tests/test/index.html
-```
+## Implementation exercises
 
-**Starting state:** every test here FAILS on purpose — Part 1 stubs throw `TODO()`, Part 2 functions contain bugs. Making them all green is the exercise.
+| #  | Function | Concept drilled | Difficulty |
+|----|----------|-----------------|------------|
+| 01 | `Iterable.mapParallel(concurrency, transform)` | Structured concurrency, `Semaphore`, order-preserving `awaitAll`, failure propagation | Medium |
+| 02 | `retryWithBackoff(maxAttempts, initialDelayMs, factor, block)` | Retry loops, exponential backoff timing, rethrowing `CancellationException` | Medium |
+| 03 | `Flow.throttleFirst(windowMs)` | Custom Flow operator, `channelFlow`, time-windowed gating | Medium–Hard |
+| 04 | `cacheThenNetwork(cache, network)` | `flow {}`, emit-then-fallback, reactive error handling | Medium |
+| 05 | `Flow.chunked(maxSize, maxDelayMs)` | Size+time batching, `channelFlow` + `Mutex` + timer, backpressure | Hard |
+| 06 | `withTimeoutOrFallback(timeoutMs, fallback, block)` | `withTimeout`, cancellation of slow work, fallback vs real errors | Easy–Medium |
+| 07 | `computeTotal(quantity, price)` | `combine` vs `zip` semantics | Easy |
+| 08 | `raceFirstSuccessful(blocks)` | Concurrent racing, first-success wins, cancel losers, error aggregation | Hard |
+| 09 | `Flow.asResult()` | Error-as-data: materialize values + terminal failure into `Result`, never throw to the collector | Easy–Medium |
+| 10 | `Flow.searchTypeahead(debounceMs, search)` | `debounce` + `flatMapLatest`: collapse rapid input, cancel the stale in-flight request | Medium–Hard |
 
----
+## Debugging exercises
 
-## What the interviewers look for (keep these in mind)
+| #  | File | Planted bug |
+|----|------|-------------|
+| D1 | `BuggyDataLoader` | `catch (Exception)` swallows `CancellationException`, breaking cancellation |
+| D2 | `BuggyAggregator` | Work launched into `GlobalScope` and never awaited → returns before results exist |
+| D3 | `BuggyPriceCalculator` | Uses `zip` (lock-step pairing) where `combine` (latest-of-each) is required |
+| D4 | `BuggyEventBuffer` | `conflate()` drops events while the processor is busy; remove it (or use `buffer()`) |
+| D5 | `BuggyItemStore` | A `StateFlow` reuses one mutable list as its value, so it emits only once; publish a snapshot |
+| D6 | `BuggyTemperatureFeed` | Emits inside `withContext(...)` → "Flow invariant is violated"; use `flowOn` instead |
 
-- Clear problem understanding & structured thinking — restate the contract before coding.
-- Clean, idiomatic Kotlin — prefer existing Flow operators over hand-rolled loops.
-- Proper Flows + **structured concurrency** — `coroutineScope`/`async`/`awaitAll`, no leaked coroutines.
-- Thoughtful error handling & edge cases — empty input, cancellation, fail-fast vs. isolate.
-- Strong debugging — form a hypothesis, confirm with the test, fix the root cause (not the symptom).
-- Clear communication — narrate your reasoning the whole way.
+## Run it like the real interview (≈70-minute timer)
 
----
+| Block      | Time    | What                                                            |
+|------------|---------|----------------------------------------------------------------|
+| Part 1     | ~35 min | Pick 2–3 implementation exercises; make their tests green.      |
+| Part 2     | ~20 min | Fix the failing debugging tests without touching them.         |
+| Review     | ~15 min | Re-read your code, narrate trade-offs, compare to the solution. |
 
-## Tips for the debugging challenges
+Commit as you go (`git add -p && git commit`) — the real round requires all changes committed.
 
-- Read the **test** first — it is the precise spec.
-- Reproduce, then localize: which assertion fails, and what does that imply?
-- Common coroutine/Flow traps to scan for:
-  - Emitting a **mutable reference** into `StateFlow`/`MutableStateFlow` (no new value ⇒ no emission, and old snapshots mutate underneath you).
-  - `supervisorScope` vs `coroutineScope` when you actually want **fail-fast**.
-  - `catch`/`try` blocks that **swallow** exceptions (including `CancellationException`).
-  - Backpressure operators (`conflate`, `buffer`, `debounce`, `sample`) that **drop** items.
-  - `launch` where you needed `withContext`/`await` (returning before the work is done).
+## In-app runner
 
-## Cleanup
+The `app` module also hosts an Android UI runner — `FunctionalTestPracticeActivity` (open the app →
+Entrance screen → **Functional Test Practice**) — that executes every exercise live with PASS / FAIL /
+TODO feedback and a "use solutions" toggle. It **depends on this module** (`implementation(project(":practice"))`)
+and runs the same kata/solution functions defined here (catalog: `app/.../practice/runner/ExerciseCatalog.kt`).
+Its scenarios use small *real* delays since there's no virtual clock on-device.
 
-This module is fully isolated. To remove it after the interview:
-```bash
-git rm -r practice
-# then delete the `include(":practice")` line in settings.gradle.kts
-```
+## Interview tips
+
+- **Narrate your reasoning.** State the contract and edge cases (empty input, failures, cancellation)
+  before you write code, then talk through your choices as you go.
+- **Prefer structured concurrency.** `coroutineScope` / `supervisorScope` over `GlobalScope`; let the
+  scope handle cancellation and error propagation.
+- **Always let `CancellationException` propagate.** When catching broadly, rethrow it first — swallowing
+  it is the single most common reactive bug.
+- **Lean on the virtual clock.** Assert timing with `currentTime` / `advanceTimeBy` / `advanceUntilIdle`
+  instead of real delays.
+- **Think about which operator fits:** `combine` vs `zip`, `flatMapLatest` vs `flatMapMerge` vs
+  `flatMapConcat`, `conflate`/`buffer` vs back-pressure; hot (`StateFlow`/`SharedFlow`) vs cold flows.

@@ -27,6 +27,7 @@ Multi-module Gradle project (see `settings.gradle.kts`):
 - `core:architecture` — MVI primitives: `BaseViewModel`, `BaseState`, `BaseIntent`, `BaseEvent`
 - `core:domain` — shared domain models (e.g. `DataItem`)
 - `core:data` — data layer, currently a near-empty placeholder intended to grow
+- `practice` — pure-JVM home of the functional-test interview katas (skeleton + paired `solutions/` + `runTest` tests, under `practice/.../implementation` and `.../debugging`). Skeleton/buggy tests are `@Ignore`'d; solution/fixed tests stay active. See `practice/README.md`. The app's `FunctionalTestPracticeActivity` runner (`app/.../practice/runner/`) depends on this module and surfaces the same exercises in a live PASS/FAIL UI; the Android `lazylist` UI practice stays in `app/.../practice/android`.
 
 The version catalog at `gradle/libs.versions.toml` is the single source for dependency versions — add libraries there, not inline.
 

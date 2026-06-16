@@ -1,44 +1,47 @@
 package com.huhx0015.androidplayground.practice.implementation
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Test
 
+/**
+ * Tests for EXERCISE 03 ([throttleFirst]). Remove @Ignore to start.
+ */
+@Ignore("Remove this annotation to begin Exercise 03")
+@OptIn(ExperimentalCoroutinesApi::class)
 class ThrottleFirstTest {
 
   @Test
-  fun `emits first item then drops items within the window`() = runTest {
-    // Emission timeline (cumulative virtual time):
-    //   A@0   B@50   C@110   D@140   E@250
+  fun emitsFirstItemThenDropsItemsWithinWindow() = runTest {
     val upstream = flow {
-      emit("A"); delay(50)   // t=0
-      emit("B"); delay(60)   // t=50
-      emit("C"); delay(30)   // t=110
-      emit("D"); delay(110)  // t=140
-      emit("E")              // t=250
+      emit("a")            // t = 0   -> emitted, window [0, 100)
+      delay(30); emit("b") // t = 30  -> dropped
+      delay(30); emit("c") // t = 60  -> dropped
+      delay(30); emit("d") // t = 90  -> dropped
+      delay(30); emit("e") // t = 120 -> emitted, window reopened
+      delay(30); emit("f") // t = 150 -> dropped
     }
 
-    val result = upstream.throttleFirst(windowMillis = 100).toList()
+    val result = upstream.throttleFirst(windowMs = 100).toList()
 
-    // A emitted; A's window covers [0,100] -> B dropped.
-    // C@110 emitted; window covers [110,210] -> D dropped.
-    // E@250 emitted.
-    assertEquals(listOf("A", "C", "E"), result)
+    assertEquals(listOf("a", "e"), result)
   }
 
   @Test
-  fun `single item passes through`() = runTest {
-    val result = flowOf("only").throttleFirst(windowMillis = 1_000).toList()
-    assertEquals(listOf("only"), result)
-  }
+  fun emitsEveryItemWhenSpacedBeyondWindow() = runTest {
+    val upstream = flow {
+      emit(1)
+      delay(200); emit(2)
+      delay(200); emit(3)
+    }
 
-  @Test
-  fun `empty upstream emits nothing`() = runTest {
-    val result = flowOf<String>().throttleFirst(windowMillis = 100).toList()
-    assertEquals(emptyList<String>(), result)
+    val result = upstream.throttleFirst(windowMs = 100).toList()
+
+    assertEquals(listOf(1, 2, 3), result)
   }
 }

@@ -1,0 +1,43 @@
+package com.huhx0015.androidplayground.practice.implementation.solutions
+
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+/**
+ * Verifies the reference solution for EXERCISE 09. Mirrors
+ * [com.huhx0015.androidplayground.practice.implementation.AsResultTest].
+ */
+@OptIn(ExperimentalCoroutinesApi::class)
+class AsResultSolutionTest {
+
+  @Test
+  fun wrapsEachEmissionInResultSuccess() = runTest {
+    val results = flowOf(1, 2, 3).asResultSolution().toList()
+
+    assertEquals(listOf(1, 2, 3), results.map { it.getOrThrow() })
+    assertTrue(results.all { it.isSuccess })
+  }
+
+  @Test
+  fun capturesUpstreamFailureAndCompletesNormally() = runTest {
+    val upstream = flow {
+      emit(1)
+      emit(2)
+      throw IllegalStateException("boom")
+    }
+
+    val results = upstream.asResultSolution().toList()
+
+    assertEquals(3, results.size)
+    assertEquals(1, results[0].getOrThrow())
+    assertEquals(2, results[1].getOrThrow())
+    assertTrue(results[2].isFailure)
+    assertEquals("boom", results[2].exceptionOrNull()?.message)
+  }
+}
