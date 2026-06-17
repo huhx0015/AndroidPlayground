@@ -23,5 +23,6 @@ suspend fun <T, R> Iterable<T>.mapParallel(
   concurrency: Int,
   transform: suspend (T) -> R,
 ): List<R> {
+
   TODO("Implement mapParallel — see the KDoc contract above")
 }

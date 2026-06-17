@@ -12,6 +12,7 @@ data class EntranceState(
     EntranceTopic.InterviewOffers,
   ),
   val kotlinTopics: List<EntranceTopic> = listOf(
+    EntranceTopic.Countdown,
     EntranceTopic.Coroutines,
     EntranceTopic.FunctionalTestPractice,
   ),

@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidPlayground">
+
         <activity
             android:name=".feature.entrance.MainActivity"
             android:exported="true"
@@ -18,9 +19,17 @@
             android:theme="@style/Theme.AndroidPlayground">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".feature.kotlin.countdown.CountdownActivity"
+            android:exported="false"
+            android:label="@string/title_activity_countdown"
+            android:theme="@style/Theme.AndroidPlayground" />
+
         <activity
             android:name=".feature.android.lazylist.LazyListActivity"
             android:exported="false" />
@@ -49,35 +58,43 @@
             android:exported="true"
             android:label="@string/title_activity_lazy_list_practice2"
             android:theme="@style/Theme.AndroidPlayground">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
+
         <activity
             android:name=".feature.android.recyclerview.RecyclerViewActivity"
             android:exported="false"
             android:theme="@style/Theme.AndroidPlayground" />
+
         <activity
             android:name=".feature.kotlin.coroutine.CoroutineActivity"
             android:exported="false"
             android:theme="@style/Theme.AndroidPlayground" />
+
         <activity
             android:name=".feature.kotlin.KotlinTopicActivity"
             android:exported="false"
             android:theme="@style/Theme.AndroidPlayground" />
+
         <activity
             android:name=".practice.runner.FunctionalTestPracticeActivity"
             android:exported="false"
             android:theme="@style/Theme.AndroidPlayground" />
+
         <activity
             android:name=".feature.android.transactionhistory.TransactionHistoryActivity"
             android:exported="false"
             android:theme="@style/Theme.AndroidPlayground" />
+
         <activity
             android:name=".feature.android.paymentworkflow.PaymentWorkflowActivity"
             android:exported="false"
             android:theme="@style/Theme.AndroidPlayground" />
+
         <activity
             android:name=".feature.android.offersdashboard.OffersDashboardActivity"
             android:exported="false"

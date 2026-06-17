@@ -3,6 +3,10 @@ package com.huhx0015.androidplayground.feature.entrance
 sealed class EntranceTopic {
   abstract val title: String
 
+  data object Countdown : EntranceTopic() {
+    override val title = "Countdown"
+  }
+
   data object Coroutines : EntranceTopic() {
     override val title = "Coroutines"
   }
